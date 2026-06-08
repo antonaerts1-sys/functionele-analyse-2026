@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<!-- touchpoints en handovers -->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Touchpoints en handovers</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --accent: #1A6DFF;
+    --bg: #FFFFFF;
+    --surface: #F9FAFB;
+    --border: #E5E7EB;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 760px;
+    margin: 0 0 48px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 56px 0 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+
+  /* SWIM LANE */
+  .swim {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+  }
+  .swim-grid {
+    display: grid;
+    grid-template-columns: 160px repeat(6, 1fr);
+  }
+  .phase-header {
+    padding: 16px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .phase-header:last-child { border-right: none; }
+  .phase-header.corner { background: white; border-right: 1px solid var(--border); }
+  .phase-num {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .lane-label {
+    padding: 24px 16px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .lane-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .lane-role {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .lane-cell {
+    padding: 14px 10px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
+  .lane-cell:last-child { border-right: none; }
+  .swim-grid > *:nth-last-child(-n+7) { border-bottom: none; }
+
+  .bar {
+    height: 8px;
+    width: 80%;
+    border-radius: 999px;
+    background: var(--border);
+  }
+  .bar.lead { background: var(--ink); }
+  .bar.active { background: var(--accent); }
+  .bar.support { background: var(--accent); opacity: 0.35; }
+  .bar.observe { background: var(--muted); opacity: 0.3; }
+
+  .activity-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.35;
+    padding: 0 4px;
+  }
+  .activity-label strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* AI BAND */
+  .ai-band {
+    display: grid;
+    grid-template-columns: 160px repeat(6, 1fr);
+    background: #F5F8FF;
+    border-top: 1px solid var(--border);
+  }
+  .ai-band-label {
+    padding: 16px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ai-band-label .badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .ai-band-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .ai-cell {
+    padding: 12px 10px;
+    border-right: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .ai-cell:last-child { border-right: none; }
+
+  /* TOUCHPOINTS ROW */
+  .touch-row {
+    display: grid;
+    grid-template-columns: 160px repeat(6, 1fr);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .touch-label {
+    padding: 16px;
+    border-right: 1px solid var(--border);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+  }
+  .touch-cell {
+    padding: 12px 10px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.35;
+  }
+  .touch-cell:last-child { border-right: none; }
+  .touch-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .touch-cell.empty { color: var(--muted); }
+  .touch-cell.empty .touch-dot { background: transparent; border: 1px dashed var(--border); }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-bar { width: 24px; height: 8px; border-radius: 999px; }
+
+  /* HANDOVER COMPARISON */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .compare-col {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .compare-col.old { background: var(--surface); }
+  .compare-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .compare-h {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+  }
+  .handover-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .handover-list li {
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .handover-list li:first-child { border-top: none; padding-top: 0; }
+  .handover-flow {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .handover-arrow {
+    color: var(--accent);
+    margin: 0 4px;
+  }
+  .handover-note {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .strike { color: var(--muted); text-decoration: line-through; }
+
+  /* RITUALS */
+  .rituals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .ritual {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .ritual-when {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .ritual-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  .ritual-who {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .ritual-desc {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 980px) {
+    .swim-grid, .ai-band, .touch-row { grid-template-columns: 120px repeat(6, 1fr); }
+    .compare, .rituals { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">Touchpoints en handovers <a href="index.html" style="color: var(--accent); text-decoration: none; margin-left: 12px; font-weight: 500;">→ Fase-flow met AI-rollen</a></div>
+  <h1>Wie raakt wie aan, en wanneer?</h1>
+  <p class="lede">In het oude model waren er harde handovers: klant praat met analist, analist schrijft document, document gaat naar dev. In 2026 lopen klant, analist en dev parallel mee, met AI als gedeelde laag onder alles. Minder handovers, meer momenten samen.</p>
+
+  <div class="section-title">Swim lane per fase</div>
+  <p class="section-sub">Wie is actief in welke fase, hoe intens, en wat doen ze.</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-bar" style="background:var(--ink)"></div>Leidt de fase</div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--accent)"></div>Actief betrokken</div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--accent); opacity:0.35"></div>Ondersteunt</div>
+    <div class="legend-item"><div class="legend-bar" style="background:var(--muted); opacity:0.3"></div>Volgt mee</div>
+  </div>
+
+  <div class="swim" style="margin-top: 24px;">
+    <!-- HEADER ROW -->
+    <div class="swim-grid">
+      <div class="phase-header corner"></div>
+      <div class="phase-header"><div class="phase-num">Fase 1</div><div class="phase-name">Discovery</div></div>
+      <div class="phase-header"><div class="phase-num">Fase 2</div><div class="phase-name">Requirements</div></div>
+      <div class="phase-header"><div class="phase-num">Fase 3</div><div class="phase-name">Domain modeling</div></div>
+      <div class="phase-header"><div class="phase-num">Fase 4</div><div class="phase-name">Prototype</div></div>
+      <div class="phase-header"><div class="phase-num">Fase 5</div><div class="phase-name">Productie</div></div>
+      <div class="phase-header"><div class="phase-num">Fase 6</div><div class="phase-name">Validatie</div></div>
+
+      <!-- KLANT LANE -->
+      <div class="lane-label">
+        <div class="lane-name">Klant</div>
+        <div class="lane-role">Stakeholders, gebruikers</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Vertelt</strong> pijnpunten, ambitie</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar active"></div>
+        <div class="activity-label"><strong>Valideert</strong> stories, kapt knopen door</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar support"></div>
+        <div class="activity-label"><strong>Bevestigt</strong> domeintermen</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Test</strong> klikbaar prototype</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar support"></div>
+        <div class="activity-label"><strong>Beta-test</strong> live versie</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Gebruikt</strong> en geeft signaal</div>
+      </div>
+
+      <!-- ANALIST LANE -->
+      <div class="lane-label">
+        <div class="lane-name">Analist</div>
+        <div class="lane-role">Product engineer</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Voert</strong> gesprekken, synthetiseert</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Schrijft</strong> stories met AI</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar active"></div>
+        <div class="activity-label"><strong>Modelleert</strong> samen met dev</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Bouwt</strong> prototype via AI</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar support"></div>
+        <div class="activity-label"><strong>Bewaakt</strong> intent</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar active"></div>
+        <div class="activity-label"><strong>Analyseert</strong> gebruik</div>
+      </div>
+
+      <!-- DEV LANE -->
+      <div class="lane-label">
+        <div class="lane-name">Developer</div>
+        <div class="lane-role">Senior engineer</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar observe"></div>
+        <div class="activity-label"><strong>Luistert</strong> mee, vraagt door</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar support"></div>
+        <div class="activity-label"><strong>Bewaakt</strong> haalbaarheid</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Modelleert</strong> samen met analist</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar support"></div>
+        <div class="activity-label"><strong>Reviewt</strong> tech-implicaties</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar lead"></div>
+        <div class="activity-label"><strong>Bouwt</strong> productieversie via AI</div>
+      </div>
+      <div class="lane-cell">
+        <div class="bar active"></div>
+        <div class="activity-label"><strong>Monitort</strong> drift en errors</div>
+      </div>
+    </div>
+
+    <!-- AI BAND -->
+    <div class="ai-band">
+      <div class="ai-band-label">
+        <div class="badge"></div>
+        <div class="ai-band-name">AI laag</div>
+      </div>
+      <div class="ai-cell">Transcribeert<br>en synthetiseert</div>
+      <div class="ai-cell">Schrijft stories,<br>vindt gaten</div>
+      <div class="ai-cell">Stelt model-<br>varianten voor</div>
+      <div class="ai-cell">Genereert<br>klikbare UI</div>
+      <div class="ai-cell">Schrijft code<br>en tests</div>
+      <div class="ai-cell">Detecteert<br>drift</div>
+    </div>
+
+    <!-- TOUCHPOINTS -->
+    <div class="touch-row">
+      <div class="touch-label">Touchpoints</div>
+      <div class="touch-cell">
+        <div class="touch-dot"></div>
+        Discovery<br>workshop
+      </div>
+      <div class="touch-cell">
+        <div class="touch-dot"></div>
+        Story<br>validatie
+      </div>
+      <div class="touch-cell empty">
+        <div class="touch-dot"></div>
+        Intern werk<br>(geen klant)
+      </div>
+      <div class="touch-cell">
+        <div class="touch-dot"></div>
+        Prototype<br>review live
+      </div>
+      <div class="touch-cell">
+        <div class="touch-dot"></div>
+        Beta &<br>demo
+      </div>
+      <div class="touch-cell">
+        <div class="touch-dot"></div>
+        Continue<br>feedback loop
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Handovers: oud versus nieuw</div>
+  <p class="section-sub">Hard documentenwerk verdwijnt. Wat overblijft zijn lichte, gedeelde artefacten.</p>
+
+  <div class="compare">
+    <div class="compare-col old">
+      <div class="compare-title">Vroeger</div>
+      <h3 class="compare-h">Vier harde handovers</h3>
+      <ul class="handover-list">
+        <li>
+          <div class="handover-flow strike">Klant <span class="handover-arrow">→</span> Analist</div>
+          <div class="handover-note">Interview-notulen die niemand teruglezt</div>
+        </li>
+        <li>
+          <div class="handover-flow strike">Analist <span class="handover-arrow">→</span> Designer</div>
+          <div class="handover-note">Wireframes als statisch document</div>
+        </li>
+        <li>
+          <div class="handover-flow strike">Analist <span class="handover-arrow">→</span> Developer</div>
+          <div class="handover-note">FAD van 60 pagina's, verouderd bij oplevering</div>
+        </li>
+        <li>
+          <div class="handover-flow strike">Developer <span class="handover-arrow">→</span> Klant</div>
+          <div class="handover-note">UAT na maanden stilte, ontdekking dat verkeerd ding gebouwd is</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="compare-col">
+      <div class="compare-title">Nu</div>
+      <h3 class="compare-h">Gedeelde artefacten</h3>
+      <ul class="handover-list">
+        <li>
+          <div class="handover-flow">Klant <span class="handover-arrow">⇄</span> Analist</div>
+          <div class="handover-note">Synthese-doc, samen herzien in 30 minuten</div>
+        </li>
+        <li>
+          <div class="handover-flow">Analist <span class="handover-arrow">⇄</span> Developer</div>
+          <div class="handover-note">Datamodel-canvas, live samen bewerkt</div>
+        </li>
+        <li>
+          <div class="handover-flow">Trio <span class="handover-arrow">⇄</span> Prototype</div>
+          <div class="handover-note">Klikbaar artefact als single source of truth</div>
+        </li>
+        <li>
+          <div class="handover-flow">Code <span class="handover-arrow">⇄</span> Tests</div>
+          <div class="handover-note">Test suite is contract, AI bewaakt drift</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Nieuwe rituelen</div>
+  <p class="section-sub">Minder documenten, maar wel ritme. Drie vaste momenten houden iedereen aangelijnd.</p>
+
+  <div class="rituals">
+    <div class="ritual">
+      <div class="ritual-when">Wekelijks</div>
+      <h3 class="ritual-name">Prototype walkthrough</h3>
+      <div class="ritual-who">klant • analist • dev</div>
+      <div class="ritual-desc">30 min live door het huidige prototype lopen. Klant test, dev noteert, analist past direct aan.</div>
+    </div>
+
+    <div class="ritual">
+      <div class="ritual-when">Per release</div>
+      <h3 class="ritual-name">Drift check</h3>
+      <div class="ritual-who">analist • dev • AI</div>
+      <div class="ritual-desc">AI vergelijkt nieuwe code met oorspronkelijke stories. Trio bespreekt rode vlaggen voor de release uitgaat.</div>
+    </div>
+
+    <div class="ritual">
+      <div class="ritual-when">Continu</div>
+      <h3 class="ritual-name">Shared workspace</h3>
+      <div class="ritual-who">trio</div>
+      <div class="ritual-desc">Linear of Notion-board waar stories, model en links naar prototype samen leven. Geen losse documenten meer.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

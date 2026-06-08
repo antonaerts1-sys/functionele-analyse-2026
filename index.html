@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<!-- functionele analyse anno 2026 — zes fases -->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Functionele analyse anno 2026</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --accent: #1A6DFF;
+    --bg: #FFFFFF;
+    --surface: #F9FAFB;
+    --border: #E5E7EB;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 0 48px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 64px 0 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+
+  /* OLD FLOW: compact horizontal strip */
+  .old-flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .old-step {
+    text-align: center;
+    padding: 12px 8px;
+    position: relative;
+  }
+  .old-step + .old-step::before {
+    content: "›";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+  }
+  .old-step-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .old-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .old-meta strong { color: var(--ink); font-weight: 500; }
+
+  /* NEW FLOW: vertical phases */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .phase {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-head {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .phase-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .phase-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 2px;
+  }
+  .phase-sub {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .ai-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .ai-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .ai-pill.high .dot { background: var(--accent); }
+  .ai-pill.mid .dot { background: var(--accent); opacity: 0.55; }
+  .ai-pill.low .dot { background: var(--muted); opacity: 0.5; }
+
+  .phase-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+  .col {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .col:last-child { border-right: none; }
+  .col-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .col li {
+    padding: 4px 0;
+    font-size: 14px;
+    color: var(--ink);
+    position: relative;
+    padding-left: 16px;
+  }
+  .col li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 6px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .col.ai li::before { background: var(--accent); }
+
+  .phase-foot {
+    padding: 14px 24px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .tool-tag {
+    font-size: 12px;
+    color: var(--muted);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .foot-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  /* CONNECTOR */
+  .connector {
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .connector::after {
+    content: "";
+    width: 1px;
+    height: 100%;
+    background: var(--border);
+  }
+
+  /* SHIFTS GRID */
+  .shifts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .shift {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .shift-from {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .shift-to {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .shift-arrow {
+    color: var(--accent);
+    margin: 0 6px;
+  }
+  .shift-note {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 999px; }
+
+  @media (max-width: 860px) {
+    .phase-body { grid-template-columns: 1fr; }
+    .col { border-right: none; border-bottom: 1px solid var(--border); }
+    .col:last-child { border-bottom: none; }
+    .old-flow { grid-template-columns: 1fr 1fr; }
+    .shifts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">Functionele analyse <a href="touchpoints.html" style="color: var(--accent); text-decoration: none; margin-left: 12px; font-weight: 500;">→ Touchpoints en handovers</a></div>
+  <h1>De ideale to-be anno 2026</h1>
+  <p class="lede">Van document-gedreven naar artefact-gedreven. De spec is een werkend prototype plus executable tests. AI versnelt elke fase, maar smaak, domeinkennis en verificatie blijven menselijk.</p>
+
+  <div class="section-title">Hoe het vroeger ging</div>
+  <p class="section-sub">Lineair, document-zwaar, harde hand-off naar dev.</p>
+  <div class="old-flow">
+    <div class="old-step"><div class="old-step-label">Interviews</div></div>
+    <div class="old-step"><div class="old-step-label">FAD document</div></div>
+    <div class="old-step"><div class="old-step-label">Wireframes</div></div>
+    <div class="old-step"><div class="old-step-label">Hand-off</div></div>
+    <div class="old-step"><div class="old-step-label">Dev bouwt</div></div>
+  </div>
+  <div class="old-meta">
+    <span><strong>Doorlooptijd:</strong> 2–6 maanden voor eerste regel code</span>
+    <span><strong>Artefact:</strong> 60–80 pagina PDF</span>
+    <span><strong>Risico:</strong> spec verouderd bij oplevering</span>
+  </div>
+
+  <div class="section-title">Hoe het in 2026 werkt</div>
+  <p class="section-sub">Zes fases, parallel waar mogelijk. Per fase: wat de mens doet, wat AI doet, wat eruit komt.</p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Hoge AI-rol</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent); opacity:0.55"></div>Gemiddeld</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--muted); opacity:0.5"></div>Mens leidt, AI assisteert</div>
+  </div>
+
+  <div class="phases">
+
+    <!-- PHASE 1 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">1</div>
+        <div>
+          <div class="phase-title">Discovery</div>
+          <div class="phase-sub">Begrijpen wat het bedrijf echt nodig heeft</div>
+        </div>
+        <div class="ai-pill high"><span class="dot"></span>AI: hoog</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>Stakeholder-gesprekken voeren</li>
+            <li>Politieke context lezen</li>
+            <li>Synthese valideren</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Transcribeert en clustert interviews</li>
+            <li>Extraheert jobs-to-be-done</li>
+            <li>Doet competitor- en regelgeving-research</li>
+            <li>Synthetiseert pijnpunten</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>Opinionated synthese (geen ruwe notulen)</li>
+            <li>Lijst probleemstellingen geprioriteerd</li>
+            <li>Landschapsanalyse</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">Granola</span>
+        <span class="tool-tag">Claude Deep Research</span>
+        <span class="tool-tag">Notion AI</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- PHASE 2 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">2</div>
+        <div>
+          <div class="phase-title">Requirements en user stories</div>
+          <div class="phase-sub">Van behoefte naar concrete stories met acceptance criteria</div>
+        </div>
+        <div class="ai-pill high"><span class="dot"></span>AI: hoog</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>Scope-knopen doorhakken</li>
+            <li>Prioriteiten zetten</li>
+            <li>Edge cases bevestigen met business</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Haalt eisen uit oude systemen, tickets, Slack</li>
+            <li>Schrijft user stories in standaard formaat</li>
+            <li>Detecteert tegenstrijdigheden en gaten</li>
+            <li>Genereert edge cases die je anders mist</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>User story backlog</li>
+            <li>Acceptance criteria per story</li>
+            <li>Conflict-rapport ter beslissing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">Linear AI</span>
+        <span class="tool-tag">Claude</span>
+        <span class="tool-tag">Productboard</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- PHASE 3 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">3</div>
+        <div>
+          <div class="phase-title">Domain modeling</div>
+          <div class="phase-sub">Entiteiten, relaties, state machines</div>
+        </div>
+        <div class="ai-pill mid"><span class="dot"></span>AI: gemiddeld</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>Domeinkeuzes valideren</li>
+            <li>Kiezen tussen varianten</li>
+            <li>Naming-conventies bepalen</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Stelt entiteiten en relaties voor</li>
+            <li>Genereert ERD en state diagrams</li>
+            <li>Toont 2-3 model-varianten naast elkaar</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>Datamodel (ERD)</li>
+            <li>State machines voor kernobjecten</li>
+            <li>Event-storming board</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">Claude artifacts</span>
+        <span class="tool-tag">Mermaid</span>
+        <span class="tool-tag">Eraser AI</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- PHASE 4 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">4</div>
+        <div>
+          <div class="phase-title">Flows en prototype</div>
+          <div class="phase-sub">Direct van story naar klikbare UI. Wireframe-fase verdwijnt.</div>
+        </div>
+        <div class="ai-pill high"><span class="dot"></span>AI: hoog</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>UX-richting bepalen</li>
+            <li>Smaak en hiërarchie cureren</li>
+            <li>Itereren op feedback</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Genereert klikbaar prototype uit user story</li>
+            <li>Vult seed data in</li>
+            <li>Maakt varianten voor A/B-keuze</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>Werkend prototype op publieke URL</li>
+            <li>Geen statische mockups meer</li>
+            <li>Business test op echte schermen</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">v0</span>
+        <span class="tool-tag">Claude artifacts</span>
+        <span class="tool-tag">Figma Make</span>
+        <span class="tool-tag">Lovable</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- PHASE 5 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">5</div>
+        <div>
+          <div class="phase-title">Prototype als spec naar productie</div>
+          <div class="phase-sub">Dev bouwt productieversie. Het prototype IS de referentie.</div>
+        </div>
+        <div class="ai-pill high"><span class="dot"></span>AI: hoog</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>Architectuurkeuzes maken</li>
+            <li>Security en data-modellen reviewen</li>
+            <li>Code-review op intent</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Schrijft 60-80% van boilerplate</li>
+            <li>Genereert tests uit user stories</li>
+            <li>Refactort en stelt verbeteringen voor</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>Productie-code</li>
+            <li>Test suite die de spec belichaamt</li>
+            <li>Deploy pipeline</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">Claude Code</span>
+        <span class="tool-tag">Cursor</span>
+        <span class="tool-tag">GitHub Copilot</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- PHASE 6 -->
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-num">6</div>
+        <div>
+          <div class="phase-title">Continue validatie</div>
+          <div class="phase-sub">Drift detecteren tussen intent en implementatie</div>
+        </div>
+        <div class="ai-pill mid"><span class="dot"></span>AI: gemiddeld</div>
+      </div>
+      <div class="phase-body">
+        <div class="col">
+          <div class="col-label">Mens doet</div>
+          <ul>
+            <li>Beslissen wat regressie is, wat evolutie</li>
+            <li>Gebruikers observeren in productie</li>
+          </ul>
+        </div>
+        <div class="col ai">
+          <div class="col-label">AI doet</div>
+          <ul>
+            <li>Vergelijkt PR met oorspronkelijke intent</li>
+            <li>Genereert regression tests</li>
+            <li>Signaleert semantic drift</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-label">Output</div>
+          <ul>
+            <li>Drift-rapport per release</li>
+            <li>Live test coverage</li>
+            <li>Loop terug naar fase 2 indien nodig</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-foot">
+        <span class="foot-label">Tools</span>
+        <span class="tool-tag">Linear AI</span>
+        <span class="tool-tag">Claude Code review</span>
+        <span class="tool-tag">PostHog AI</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title">De grote verschuivingen</div>
+  <p class="section-sub">Wat fundamenteel anders is dan vroeger.</p>
+  <div class="shifts">
+    <div class="shift">
+      <div class="shift-from">Van <span class="shift-arrow">→</span></div>
+      <div class="shift-to">Document <span class="shift-arrow">→</span> Artefact</div>
+      <div class="shift-note">De spec is geen PDF maar een werkend prototype plus tests.</div>
+    </div>
+    <div class="shift">
+      <div class="shift-from">Van <span class="shift-arrow">→</span></div>
+      <div class="shift-to">Hand-off <span class="shift-arrow">→</span> Continue samenwerking</div>
+      <div class="shift-note">Analist en dev werken parallel. Vaak dezelfde persoon.</div>
+    </div>
+    <div class="shift">
+      <div class="shift-from">Van <span class="shift-arrow">→</span></div>
+      <div class="shift-to">Maanden <span class="shift-arrow">→</span> Dagen</div>
+      <div class="shift-note">Eerste werkende versie binnen een week, niet een kwartaal.</div>
+    </div>
+    <div class="shift">
+      <div class="shift-from">Van <span class="shift-arrow">→</span></div>
+      <div class="shift-to">Volledigheid <span class="shift-arrow">→</span> Smaak</div>
+      <div class="shift-note">AI levert volledigheid. De mens cureert, kiest, oordeelt.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
