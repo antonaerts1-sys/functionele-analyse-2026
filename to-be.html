@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<!-- to-be functionele analyse 2026 — central diagram -->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>De to-be — functionele analyse 2026</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --accent: #1A6DFF;
+    --bg: #FFFFFF;
+    --surface: #F9FAFB;
+    --border: #E5E7EB;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 0 48px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 64px 0 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+
+  /* HERO DIAGRAM */
+  .hero {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 32px;
+    margin-top: 8px;
+    position: relative;
+  }
+  .stage {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* OUTCOME BAR */
+  .outcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .outcome-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .outcome-box {
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    background: white;
+  }
+  .outcome-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -4px;
+  }
+
+  .arrow-down {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+    margin: 0 auto;
+    position: relative;
+  }
+  .arrow-down::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: -3px;
+    width: 7px;
+    height: 7px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transform: rotate(45deg);
+  }
+  .arrow-up {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+    margin: 0 auto;
+    position: relative;
+  }
+  .arrow-up::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -3px;
+    width: 7px;
+    height: 7px;
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    transform: rotate(45deg);
+  }
+  .arrow-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* LOOP */
+  .loop-wrap {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 1.2 / 1;
+  }
+  .loop-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .loop-label-top, .loop-label-bottom {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--accent);
+    background: white;
+    padding: 4px 12px;
+  }
+  .loop-label-top { top: 6%; }
+  .loop-label-bottom { bottom: 6%; }
+
+  .checkpoint {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px 6px 8px;
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .checkpoint .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .cp-tl { top: 20%; left: -6%; }
+  .cp-tr { top: 20%; right: -6%; }
+  .cp-bl { bottom: 20%; left: -6%; }
+  .cp-br { bottom: 20%; right: -6%; }
+
+  /* TRIO */
+  .trio {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .trio-circle {
+    background: var(--ink);
+    color: white;
+    border-radius: 999px;
+    padding: 28px 36px;
+    text-align: center;
+    min-width: 220px;
+  }
+  .trio-eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+  }
+  .trio-name {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 6px 0 8px;
+  }
+  .trio-roles {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+  }
+  .trio-roles span:not(:last-child)::after {
+    content: "•";
+    margin-left: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  .trio-caption {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 220px;
+  }
+
+  /* AI BAND */
+  .ai-band {
+    background: #F5F8FF;
+    border: 1px solid #DCE5FB;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .ai-name-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+  }
+  .ai-name-eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .ai-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .ai-name-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .ai-actions {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .ai-action {
+    background: white;
+    border: 1px solid #DCE5FB;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .ai-action-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .ai-action-text {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  /* CUSTOMER */
+  .customer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .customer-box {
+    background: white;
+    border: 1.5px dashed var(--ink);
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .customer-meta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* DETAIL CARDS */
+  .details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .detail {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .detail-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .detail-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .detail-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .detail ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .detail li {
+    padding: 6px 0;
+    font-size: 14px;
+    position: relative;
+    padding-left: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .detail li:first-child { border-top: none; }
+  .detail li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 6px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .detail li strong { color: var(--ink); font-weight: 500; }
+  .detail li span { color: var(--muted); }
+
+  /* CHECKPOINTS DETAIL */
+  .checkpoints-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .cp-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .cp-card-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .cp-card-num .d { width: 8px; height: 8px; border-radius: 999px; background: var(--accent); }
+  .cp-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .cp-card-when {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-bottom: 10px;
+  }
+  .cp-card-desc {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* CONTRAST: NIET vs WEL */
+  .contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .contrast-col {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .contrast-col.no { background: var(--surface); }
+  .contrast-col.yes { background: white; }
+  .contrast-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .contrast-col.no .contrast-label { color: var(--muted); }
+  .contrast-col.yes .contrast-label { color: var(--accent); }
+  .contrast ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .contrast li {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .contrast li:first-child { border-top: none; }
+  .contrast-col.no li { color: var(--muted); }
+  .contrast-col.no li::before { content: "✕"; color: var(--muted); font-size: 12px; }
+  .contrast-col.yes li::before { content: "✓"; color: var(--accent); font-size: 12px; font-weight: 600; }
+
+  /* NEEDS SECTION */
+  .needs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .need {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .need-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .need-title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .need ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .need li {
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding-left: 12px;
+    position: relative;
+  }
+  .need li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--muted);
+  }
+
+  @media (max-width: 880px) {
+    .details, .checkpoints-grid, .contrast, .needs { grid-template-columns: 1fr; }
+    .ai-actions { grid-template-columns: repeat(2, 1fr); }
+    .ai-band { grid-template-columns: 1fr; }
+    .checkpoint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">De ideale to-be
+    <a href="index.html" style="color: var(--accent); text-decoration: none; margin-left: 12px; font-weight: 500;">→ Fase-flow</a>
+    <a href="touchpoints.html" style="color: var(--accent); text-decoration: none; margin-left: 12px; font-weight: 500;">→ Touchpoints</a>
+  </div>
+  <h1>Functionele analyse anno 2026</h1>
+  <p class="lede">Geen fases meer, geen handovers. Eén continue loop tussen discovery en delivery, met een trio in het midden, een AI-laag eronder, en de klant continu verbonden. Vier elementen, niet meer.</p>
+
+  <!-- HERO DIAGRAM -->
+  <div class="hero">
+    <div class="stage">
+
+      <!-- OUTCOME -->
+      <div class="outcome">
+        <div class="outcome-tag">Bovenaan</div>
+        <div class="outcome-box">OUTCOME</div>
+        <div class="outcome-meta">één meetbaar business resultaat per kwartaal</div>
+      </div>
+
+      <div class="arrow-down"></div>
+      <div class="arrow-label">continu meten</div>
+      <div class="arrow-down"></div>
+
+      <!-- LOOP -->
+      <div class="loop-wrap">
+        <svg class="loop-svg" viewBox="0 0 600 500" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrowR" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+              <path d="M 0 0 L 12 6 L 0 12 z" fill="#1A6DFF"/>
+            </marker>
+            <marker id="arrowL" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+              <path d="M 12 0 L 0 6 L 12 12 z" fill="#1A6DFF"/>
+            </marker>
+          </defs>
+          <!-- Outer rounded rect representing the loop -->
+          <rect x="20" y="20" width="560" height="460" rx="200" ry="200" fill="none" stroke="#E5E7EB" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+          <!-- Top arc with arrow going left (discovery flow) -->
+          <path d="M 480 110 Q 300 40 120 110" fill="none" stroke="#1A6DFF" stroke-width="2" marker-end="url(#arrowR)" transform="rotate(180 300 90)"/>
+
+          <!-- Bottom arc with arrow going right (delivery flow) -->
+          <path d="M 120 390 Q 300 460 480 390" fill="none" stroke="#1A6DFF" stroke-width="2" marker-end="url(#arrowR)"/>
+
+          <!-- Labels -->
+          <text x="300" y="55" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="13" font-weight="600" fill="#1A6DFF" letter-spacing="2">DISCOVERY</text>
+          <text x="300" y="455" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="13" font-weight="600" fill="#1A6DFF" letter-spacing="2">DELIVERY</text>
+
+          <!-- 4 checkpoint dots -->
+          <circle cx="150" cy="140" r="6" fill="#1A6DFF"/>
+          <circle cx="450" cy="140" r="6" fill="#1A6DFF"/>
+          <circle cx="150" cy="360" r="6" fill="#1A6DFF"/>
+          <circle cx="450" cy="360" r="6" fill="#1A6DFF"/>
+        </svg>
+
+        <!-- TRIO at center -->
+        <div class="trio">
+          <div class="trio-circle">
+            <div class="trio-eyebrow">in het midden</div>
+            <div class="trio-name">Het trio</div>
+            <div class="trio-roles">
+              <span>PM</span>
+              <span>Designer</span>
+              <span>Engineer</span>
+            </div>
+          </div>
+          <div class="trio-caption">één team, geen handovers, beslist samen</div>
+        </div>
+
+        <!-- Checkpoint labels -->
+        <div class="checkpoint cp-tl"><span class="dot"></span>Opportunity check</div>
+        <div class="checkpoint cp-tr"><span class="dot"></span>Prototype walkthrough</div>
+        <div class="checkpoint cp-bl"><span class="dot"></span>Drift check</div>
+        <div class="checkpoint cp-br"><span class="dot"></span>Outcome review</div>
+      </div>
+
+      <div class="arrow-down"></div>
+      <div class="arrow-label">draait op</div>
+      <div class="arrow-down"></div>
+
+      <!-- AI LAYER -->
+      <div class="ai-band">
+        <div class="ai-name-block">
+          <div class="ai-name-eyebrow">Eronder</div>
+          <div class="ai-name">AI-laag</div>
+          <div class="ai-name-sub">MCP backbone</div>
+        </div>
+        <div class="ai-actions">
+          <div class="ai-action">
+            <div class="ai-action-label">01</div>
+            <div class="ai-action-text">Transcribeert interviews</div>
+          </div>
+          <div class="ai-action">
+            <div class="ai-action-label">02</div>
+            <div class="ai-action-text">Extraheert jobs en stories</div>
+          </div>
+          <div class="ai-action">
+            <div class="ai-action-label">03</div>
+            <div class="ai-action-text">Genereert UI en code</div>
+          </div>
+          <div class="ai-action">
+            <div class="ai-action-label">04</div>
+            <div class="ai-action-text">Schrijft tests</div>
+          </div>
+          <div class="ai-action">
+            <div class="ai-action-label">05</div>
+            <div class="ai-action-text">Detecteert drift</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-up"></div>
+      <div class="arrow-label">wekelijks gesprek</div>
+      <div class="arrow-up"></div>
+
+      <!-- CUSTOMER -->
+      <div class="customer">
+        <div class="customer-box">KLANT</div>
+        <div class="customer-meta">continu verbonden, niet aan het einde</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- THE 4 ELEMENTS DETAILED -->
+  <div class="section-title">De vier elementen, uitgepakt</div>
+  <p class="section-sub">Wat elk element precies betekent en waarom het er staat.</p>
+
+  <div class="details">
+    <div class="detail">
+      <div class="detail-num">1</div>
+      <h3 class="detail-title">Het trio in het midden</h3>
+      <p class="detail-sub">PM, designer, engineer. Eén team, één verantwoordelijkheid.</p>
+      <ul>
+        <li><strong>Geen rolwissels.</strong> <span>Geen analist die overdraagt aan designer die overdraagt aan dev.</span></li>
+        <li><strong>Samen beslissen.</strong> <span>Trade-offs worden niet in een document gegoten, maar in een gesprek van 30 minuten.</span></li>
+        <li><strong>Soms één persoon.</strong> <span>Bij kleinere teams is dit een T-shaped product engineer die alle drie de petten draagt.</span></li>
+        <li><strong>Stable unit.</strong> <span>Hetzelfde trio over meerdere kwartalen voor compounding context.</span></li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <div class="detail-num">2</div>
+      <h3 class="detail-title">De loop er omheen</h3>
+      <p class="detail-sub">Discovery en delivery lopen continu naast elkaar.</p>
+      <ul>
+        <li><strong>Geen begin, geen einde.</strong> <span>Geen kickoff-fase, geen oplevering. Alleen iteraties.</span></li>
+        <li><strong>Discovery boven.</strong> <span>Wekelijkse interviews, opportunity solution tree wordt elke 3-4 weken bijgewerkt.</span></li>
+        <li><strong>Delivery onder.</strong> <span>Continu kleine releases. Prototype is altijd het meest actuele artefact.</span></li>
+        <li><strong>Vier checkpoints op de loop.</strong> <span>Vaste momenten om te pauzeren en samen te kijken.</span></li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <div class="detail-num">3</div>
+      <h3 class="detail-title">De outcome bovenaan</h3>
+      <p class="detail-sub">Eén business resultaat dat alles aanstuurt.</p>
+      <ul>
+        <li><strong>Niet een feature lijst.</strong> <span>Een meetbare verandering: conversie, retentie, NPS, tijdwinst, kostenbesparing.</span></li>
+        <li><strong>Eén per kwartaal.</strong> <span>Meer dan één betekent geen focus.</span></li>
+        <li><strong>Continu gemeten.</strong> <span>Dashboard zichtbaar voor het hele trio, niet enkel voor de PM.</span></li>
+        <li><strong>Geen outcome, geen project.</strong> <span>Werk dat geen meetbare uitkomst beoogt, start gewoon niet.</span></li>
+      </ul>
+    </div>
+
+    <div class="detail">
+      <div class="detail-num">4</div>
+      <h3 class="detail-title">De AI-laag onder</h3>
+      <p class="detail-sub">Niet een tool, maar een fundament. MCP als ruggengraat.</p>
+      <ul>
+        <li><strong>Structureel, niet incidenteel.</strong> <span>AI is geen knop ergens, maar de plumbing onder de tools.</span></li>
+        <li><strong>MCP verbindt alles.</strong> <span>Linear, Figma, Cursor, Claude praten met elkaar via één protocol.</span></li>
+        <li><strong>Achtergrondservice.</strong> <span>Het trio merkt AI niet als ze werkt. Pas als ze faalt.</span></li>
+        <li><strong>Domeincontext is voorwaarde.</strong> <span>AI is waardeloos zonder expliciete uitleg over domein en architectuur (Thoughtworks-pitfall).</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- THE 4 CHECKPOINTS -->
+  <div class="section-title">De vier checkpoints op de loop</div>
+  <p class="section-sub">Vaste momenten waar het trio stopt en samen kijkt.</p>
+
+  <div class="checkpoints-grid">
+    <div class="cp-card">
+      <div class="cp-card-num"><span class="d"></span>01</div>
+      <h4 class="cp-card-title">Opportunity check</h4>
+      <div class="cp-card-when">wekelijks · 30 min</div>
+      <div class="cp-card-desc">Trio kijkt naar de opportunity solution tree. Welke nieuwe opportunities kwamen uit klantgesprekken? Wat gaat van assumption-test naar build?</div>
+    </div>
+    <div class="cp-card">
+      <div class="cp-card-num"><span class="d"></span>02</div>
+      <h4 class="cp-card-title">Prototype walkthrough</h4>
+      <div class="cp-card-when">wekelijks · 30 min met klant</div>
+      <div class="cp-card-desc">Klant test het huidige prototype live. Dev en designer passen direct aan tijdens de sessie. Geen UAT-fase achteraf.</div>
+    </div>
+    <div class="cp-card">
+      <div class="cp-card-num"><span class="d"></span>03</div>
+      <h4 class="cp-card-title">Drift check</h4>
+      <div class="cp-card-when">per release · 15 min</div>
+      <div class="cp-card-desc">AI vergelijkt de nieuwe code met de oorspronkelijke stories en het prototype. Trio bespreekt afwijkingen voor release.</div>
+    </div>
+    <div class="cp-card">
+      <div class="cp-card-num"><span class="d"></span>04</div>
+      <h4 class="cp-card-title">Outcome review</h4>
+      <div class="cp-card-when">per kwartaal · 60 min met klant</div>
+      <div class="cp-card-desc">Heeft het werk de KPI bewogen? Niet "is de feature af" maar "is het resultaat behaald". Bepaalt de outcome voor volgend kwartaal.</div>
+    </div>
+  </div>
+
+  <!-- WHAT THIS REPLACES -->
+  <div class="section-title">Wat dit beeld vervangt</div>
+  <p class="section-sub">Wat in de oude wereld zat en wat erin de plaats komt.</p>
+
+  <div class="contrast">
+    <div class="contrast-col no">
+      <div class="contrast-label">Verdwijnt</div>
+      <ul>
+        <li>Lineaire fases (analyse → design → dev)</li>
+        <li>Hand-over van document naar volgende persoon</li>
+        <li>60-pagina FAD die niemand teruglezt</li>
+        <li>Wireframes als statisch tussenartefact</li>
+        <li>Kickoff-en-dan-stilte met de klant</li>
+        <li>AI als losse experimentele tool</li>
+        <li>Featurelijst zonder gekoppelde KPI</li>
+        <li>UAT-moment dat zes maanden te laat komt</li>
+      </ul>
+    </div>
+    <div class="contrast-col yes">
+      <div class="contrast-label">Komt in de plaats</div>
+      <ul>
+        <li>Continue loop tussen discovery en delivery</li>
+        <li>Gedeeld werkend prototype als single source of truth</li>
+        <li>Live opportunity solution tree</li>
+        <li>Wekelijks klantgesprek als ritme</li>
+        <li>AI als structurele plumbing onder alles</li>
+        <li>Eén meetbare outcome per kwartaal</li>
+        <li>Drift check als release-ritueel</li>
+        <li>Test suite als levend contract</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WHAT YOU NEED -->
+  <div class="section-title">Wat je nodig hebt om dit te draaien</div>
+  <p class="section-sub">Vier lagen van bovenaan zacht naar onderaan hard. Slaat één laag over, breekt het hele systeem.</p>
+
+  <div class="needs">
+    <div class="need">
+      <div class="need-eyebrow">Laag 1</div>
+      <h4 class="need-title">Mensen</h4>
+      <ul>
+        <li>PM met outcome-denken en JTBD-skill</li>
+        <li>Designer die prototypes bouwt, geen mockups</li>
+        <li>Senior engineer met domeinkennis</li>
+        <li>Optioneel: parttime domeinexpert</li>
+        <li>Allemaal AI-geletterd, weten wanneer AI faalt</li>
+      </ul>
+    </div>
+    <div class="need">
+      <div class="need-eyebrow">Laag 2</div>
+      <h4 class="need-title">Rituelen</h4>
+      <ul>
+        <li>Wekelijks klantinterview (Torres-style)</li>
+        <li>Wekelijkse opportunity check</li>
+        <li>Drift check per release</li>
+        <li>Outcome review per kwartaal</li>
+        <li>Continu shared workspace, geen mailthreads</li>
+      </ul>
+    </div>
+    <div class="need">
+      <div class="need-eyebrow">Laag 3</div>
+      <h4 class="need-title">Tools</h4>
+      <ul>
+        <li>Discovery: Granola, Vistaly, Dovetail</li>
+        <li>Issue hub: Linear met agents</li>
+        <li>Prototype: Figma Make, v0, Claude Artifacts</li>
+        <li>Code: Cursor, Claude Code</li>
+        <li>Integratie: MCP als backbone</li>
+        <li>Meting: DX Core 4 dashboard</li>
+      </ul>
+    </div>
+    <div class="need">
+      <div class="need-eyebrow">Laag 4</div>
+      <h4 class="need-title">Fundament</h4>
+      <ul>
+        <li>Contract dat continuous discovery toelaat</li>
+        <li>Enterprise AI-licenties, geen gratis tier</li>
+        <li>Privacy-architectuur met DPA's getekend</li>
+        <li>Toestemmingsflow voor opnames standaard</li>
+        <li>Security review op MCP-connecties</li>
+        <li>Eigenaar voor AI-geletterdheid binnen team</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
