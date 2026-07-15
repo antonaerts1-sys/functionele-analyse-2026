@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!-- verhaal — hetzelfde klantproject in twee werelden: as-is naast to-be, plus wat het betekent voor het agency -->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Het verhaal: hetzelfde project, twee werelden</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --accent: #1A6DFF;
+    --bg: #FFFFFF;
+    --surface: #F9FAFB;
+    --border: #E5E7EB;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .eyebrow a {
+    color: var(--accent);
+    text-decoration: none;
+    margin-left: 12px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 0 16px;
+  }
+  .kern {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 780px;
+    margin: 0 0 56px;
+  }
+  .kern .accent { color: var(--accent); }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 64px 0 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+
+  /* VERHAAL IN MOMENTEN */
+  .moment {
+    margin-bottom: 40px;
+  }
+  .moment-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .moment-label .num {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: white;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .worlds {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .world {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .world.asis { background: var(--surface); }
+  .world.tobe { background: white; }
+  .world-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .world.asis .world-label { color: var(--muted); }
+  .world.tobe .world-label { color: var(--accent); }
+  .world p { margin: 0 0 10px; font-size: 14px; }
+  .world p:last-child { margin-bottom: 0; }
+  .world .tijd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* VERGELIJKINGSBORD */
+  .board {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+  .board-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .board-row:last-child { border-bottom: none; }
+  .board-row.head {
+    background: var(--surface);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .board-row.head .cell.tobe-cell { color: var(--accent); }
+  .board-row.head .cell { color: var(--muted); }
+  .cell {
+    padding: 14px 20px;
+    font-size: 14px;
+    border-right: 1px solid var(--border);
+  }
+  .cell:last-child { border-right: none; }
+  .cell.dim {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .cell.asis-cell { color: var(--muted); }
+  .cell.tobe-cell { color: var(--ink); }
+
+  /* AGENCY-CONSEQUENTIES */
+  .gevolgen {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .gevolg {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .gevolg-titel {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .gevolg p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .gevolg p strong { color: var(--ink); font-weight: 500; }
+
+  .bronnen {
+    margin-top: 48px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 780px;
+  }
+  .bronnen strong { color: var(--ink); font-weight: 500; }
+  .bronnen a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .worlds { grid-template-columns: 1fr; }
+    .gevolgen { grid-template-columns: 1fr; }
+    .board-row { grid-template-columns: 1fr; }
+    .cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .cell:last-child { border-bottom: none; }
+    .cell.dim { background: var(--surface); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">Functionele analyse
+    <a href="index.html">→ Fase-flow</a>
+    <a href="to-be.html">→ De to-be</a>
+    <a href="touchpoints.html">→ Touchpoints</a>
+    <a href="maandfocus.html">→ Maandfocus</a>
+  </div>
+  <h1>Hetzelfde project, twee werelden</h1>
+  <p class="lede">Eén fictief maar herkenbaar klantproject, twee keer verteld: zoals het gisteren nog ging, en zoals het er met AI voor een agency uitziet. Daaronder de vergelijking in één beeld, en wat dit betekent voor het agency zelf.</p>
+  <p class="kern">In de oude wereld ziet de klant na tien maanden voor het eerst een echt scherm. In de nieuwe wereld klikt ze <span class="accent">op dag vijf door haar eigen tool</span>.</p>
+
+  <div class="section-title">Het verhaal</div>
+  <p class="section-sub">Mira is directeur van De Schakel, een jeugdhulporganisatie met veertien locaties. Haar planners verliezen twee dagen per week aan de roosterpuzzel in Excel. Ze zoekt een digitale partner.</p>
+
+  <div class="moment">
+    <div class="moment-label"><span class="num">1</span>De vraag komt binnen</div>
+    <div class="worlds">
+      <div class="world asis">
+        <div class="world-label">As-is</div>
+        <p><span class="tijd">week 1</span></p>
+        <p>Een accountmanager komt langs met een salesdeck. Kickoff met acht mensen aan tafel. Het voorstel: eerst een grondige analysefase van drie maanden, dan bouwen. De offerte is fixed price, gebaseerd op een scope die nog geschreven moet worden.</p>
+      </div>
+      <div class="world tobe">
+        <div class="world-label">To-be</div>
+        <p><span class="tijd">dag 1</span></p>
+        <p>Twee mensen komen langs met één vraag: wat moet er over drie maanden meetbaar anders zijn? Samen landen ze op één outcome: planners besteden nog hooguit vier uur per week aan het rooster, in plaats van twee dagen. Geen featurelijst. De offerte volgt de outcome, niet andersom.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="moment">
+    <div class="moment-label"><span class="num">2</span>De eerste week</div>
+    <div class="worlds">
+      <div class="world asis">
+        <div class="world-label">As-is</div>
+        <p><span class="tijd">week 2 tot 6</span></p>
+        <p>De analist plant interviews uit over vier weken, want agenda's. De notulen stapelen zich op in een map die niemand nog terugleest. Mira hoort even niets.</p>
+      </div>
+      <div class="world tobe">
+        <div class="world-label">To-be</div>
+        <p><span class="tijd">dag 1 tot 5</span></p>
+        <p>Het trio, een product engineer, een designer en een PM, interviewt maandag twee planners. De opname wordt automatisch getranscribeerd, AI clustert de pijnpunten en haalt de jobs-to-be-done eruit, het trio valideert. Woensdag staat er een klikbaar prototype met echte roosterdata op een URL.</p>
+        <p>Vrijdag klikt Mira door haar eigen tool en zegt: "Nachtdiensten werken bij ons anders." Dat kost tien minuten en een aanpassing ter plekke.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="moment">
+    <div class="moment-label"><span class="num">3</span>Het bouwen</div>
+    <div class="worlds">
+      <div class="world asis">
+        <div class="world-label">As-is</div>
+        <p><span class="tijd">maand 2 tot 9</span></p>
+        <p>De analist schrijft een functionele analyse van 68 pagina's. Mira tekent af na een leesavond, half begrepen. Dan wireframes, dan de hand-off: het document gaat over de muur naar een devteam dat de interviews nooit heeft gehoord. Daarna wordt het stil aan de klantkant.</p>
+      </div>
+      <div class="world tobe">
+        <div class="world-label">To-be</div>
+        <p><span class="tijd">week 2 tot 8</span></p>
+        <p>Elke week een walkthrough van dertig minuten met Mira en de planners, elke week een release. Agents schrijven het merendeel van de code en de tests, de engineer reviewt op intent en draait per release een drift check: wijkt de code af van wat we bedoelden? De designer past het prototype live aan tijdens het gesprek. Het prototype is de spec; een apart document bestaat niet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="moment">
+    <div class="moment-label"><span class="num">4</span>Het moment van de waarheid</div>
+    <div class="worlds">
+      <div class="world asis">
+        <div class="world-label">As-is</div>
+        <p><span class="tijd">maand 10</span></p>
+        <p>UAT. Mira ziet voor het eerst echte schermen. De nachtdienstenregel blijkt op pagina 41 verkeerd begrepen. De fix heet meerwerk. De relatie verzuurt precies op het moment dat het product live moet.</p>
+      </div>
+      <div class="world tobe">
+        <div class="world-label">To-be</div>
+        <p><span class="tijd">week 8</span></p>
+        <p>De eerste twee locaties plannen live in de tool. Het KPI-dashboard staat aan en iedereen kijkt naar dezelfde grafiek. Fouten zijn er hier ook, maar ze worden dagen na ontstaan gevonden in een walkthrough, niet maanden later in een acceptatietest.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="moment">
+    <div class="moment-label"><span class="num">5</span>Een kwartaal later</div>
+    <div class="worlds">
+      <div class="world asis">
+        <div class="world-label">As-is</div>
+        <p><span class="tijd">maand 13</span></p>
+        <p>De tool is opgeleverd, netjes conform spec. Alleen was de spec tien maanden oud toen hij live ging. Versie 2 vergt een nieuw traject en een nieuwe offerte. Iedereen begint opnieuw.</p>
+      </div>
+      <div class="world tobe">
+        <div class="world-label">To-be</div>
+        <p><span class="tijd">week 13</span></p>
+        <p>Outcome review: planners zitten op vijf uur per week, net geen vier. Het trio en Mira kiezen samen de volgende outcome. Het contract loopt door zolang de KPI beweegt. Discovery en delivery zijn nooit gestopt, dus er is geen versie 2, alleen een volgende iteratie.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">As-is naast to-be in één beeld</div>
+  <p class="section-sub">Dezelfde vergelijking, samengevat per dimensie.</p>
+
+  <div class="board">
+    <div class="board-row head">
+      <div class="cell dim"></div>
+      <div class="cell asis-cell">As-is</div>
+      <div class="cell tobe-cell">To-be</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Team per project</div>
+      <div class="cell asis-cell">8 mensen in estafette: sales, analist, designer, devs, PM</div>
+      <div class="cell tobe-cell">Pod van 3 tot 5 mensen plus agents, van begin tot einde</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">De spec</div>
+      <div class="cell asis-cell">68 pagina's PDF, verouderd bij oplevering</div>
+      <div class="cell tobe-cell">Werkend prototype plus tests, per definitie actueel</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Klantcontact</div>
+      <div class="cell asis-cell">Kickoff, sign-off, UAT. Daartussen stilte</div>
+      <div class="cell tobe-cell">Elke week dertig minuten aan tafel</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Eerste werkende versie</div>
+      <div class="cell asis-cell">Maand 5 tot 10</div>
+      <div class="cell tobe-cell">Week 1</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Een fout gevonden</div>
+      <div class="cell asis-cell">Bij UAT, en dan heet het meerwerk</div>
+      <div class="cell tobe-cell">In de walkthrough, en dan is het een gesprek van tien minuten</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Rol van AI</div>
+      <div class="cell asis-cell">Losse experimenten per medewerker</div>
+      <div class="cell tobe-cell">Structurele laag onder elk project, tools verbonden via MCP</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Rol van de mens</div>
+      <div class="cell asis-cell">Zelf schrijven, tekenen, bouwen</div>
+      <div class="cell tobe-cell">Orkestreren, cureren, beslissen. Iedereen wordt een beetje manager</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Wat gemeten wordt</div>
+      <div class="cell asis-cell">Uren en opgeleverde features</div>
+      <div class="cell tobe-cell">Eén KPI per kwartaal bij de klant, DX Core 4 intern</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Het contract</div>
+      <div class="cell asis-cell">Fixed price op een scope-document</div>
+      <div class="cell tobe-cell">Outcome-based of T&amp;M, met wekelijkse zichtbaarheid als vertrouwensbasis</div>
+    </div>
+    <div class="board-row">
+      <div class="cell dim">Groei van het agency</div>
+      <div class="cell asis-cell">Meer omzet vraagt meer mensen</div>
+      <div class="cell tobe-cell">Meer waarde per persoon, hetzelfde team doet meer projecten</div>
+    </div>
+  </div>
+
+  <div class="section-title">Wat dit betekent voor het agency zelf</div>
+  <p class="section-sub">Het projectniveau hierboven komt uit onze eigen methodologie. Deze organisatielaag komt grotendeels uit het Bain-onderzoek naar software-organisaties.</p>
+
+  <div class="gevolgen">
+    <div class="gevolg">
+      <div class="gevolg-titel">Kleinere eenheden, geen kleinere ambitie</div>
+      <p>Bain ziet klassieke teams van 1 PM plus 6 tot 8 engineers krimpen naar pods van 3 tot 5 mensen plus agents. Voor een agency betekent dat: <strong>meer projecten parallel met hetzelfde team</strong>, niet minder werk. Bij koplopers groeide omzet vorig jaar 22 procent sneller dan het personeelsbestand.</p>
+    </div>
+    <div class="gevolg">
+      <div class="gevolg-titel">Orkestreren wordt de kernskill</div>
+      <p>Wie vroeger uitvoerde, geeft nu richting aan agents: werk opknippen, delegeren, en <strong>kwaliteit beoordelen van werk dat je niet zelf deed</strong>. Dat is een managementvaardigheid die nu van iedereen gevraagd wordt, ook van de meest junior collega.</p>
+    </div>
+    <div class="gevolg">
+      <div class="gevolg-titel">Lagen en handovers verdwijnen</div>
+      <p>De keten accountmanager, analist, designer, dev bestaat niet meer; de pod doet het einde-tot-einde. Dat betekent ook <strong>minder coördinatielagen in het agency zelf</strong>. Rollen vervagen: de PM prototypet, de engineer zit bij de klant.</p>
+    </div>
+    <div class="gevolg">
+      <div class="gevolg-titel">Het businessmodel moet mee</div>
+      <p>Fixed price op een document sterft samen met het document. Wat overblijft: <strong>outcome-based werken of T&amp;M met wekelijkse zichtbaarheid</strong>. En governance wordt een echt vak: wie mag welke beslissing aan een agent delegeren, en welke tool ziet welke klantdata.</p>
+    </div>
+    <div class="gevolg">
+      <div class="gevolg-titel">De moat verschuift naar smaak</div>
+      <p>Als AI volledigheid levert, concurreer je niet meer op productiecapaciteit. Wat overblijft is <strong>smaak, domeinkennis en klantvertrouwen</strong>: weten wat er niet gebouwd moet worden, en elke week aan tafel zitten.</p>
+    </div>
+    <div class="gevolg">
+      <div class="gevolg-titel">Meet uitkomst, geen gevoel</div>
+      <p>Eerlijkheidshalve: devs vóélen zich zo'n 20 procent sneller met AI, maar bleken op grote codebases soms 19 procent trager (METR, 2025). Daarom meten we <strong>de KPI van de klant en DX Core 4 intern</strong>, niet het enthousiasme van het team.</p>
+    </div>
+  </div>
+
+  <div class="bronnen">
+    <strong>Waar dit op steunt.</strong> Het projectverhaal volgt de methodologie van deze site (zes fases, trio, continue loop, prototype als spec). De organisatielaag komt uit <a href="https://www.bain.com/insights/how-will-ai-change-software-organizations/">Bain, How will AI change software organizations?</a> (hybrid-agentic pods, orkestratie, delayering, governance) en de bronnenlijst in de CLAUDE.md van deze repo, waaronder de METR-studie (juli 2025) als tegenwicht. Mira en De Schakel zijn fictief.
+  </div>
+
+</div>
+</body>
+</html>
