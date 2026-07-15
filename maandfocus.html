@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<!-- maandfocus — werkdocument per fase: skills, acties deze maand, historiek -->
+<!-- Inhoud bijwerken? Alles staat in het DATA-object onderaan dit bestand. Zie CLAUDE.md voor het maandritueel. -->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maandfocus per fase</title>
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --accent: #1A6DFF;
+    --bg: #FFFFFF;
+    --surface: #F9FAFB;
+    --border: #E5E7EB;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .eyebrow a {
+    color: var(--accent);
+    text-decoration: none;
+    margin-left: 12px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 0 48px;
+  }
+
+  /* FOCUS VAN DE MAAND */
+  .focus-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 48px;
+  }
+  .focus-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .focus-month {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    float: right;
+  }
+  .focus-text {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .focus-text.empty {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  /* FASE-KAARTEN */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .phase {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-head {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .phase-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .phase-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 2px;
+  }
+  .phase-sub {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .phase-link {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .phase-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .col {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .col:last-child { border-right: none; }
+  .col-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .col-label .month {
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-left: 6px;
+  }
+  .col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .col li {
+    padding: 4px 0;
+    font-size: 14px;
+    color: var(--ink);
+    position: relative;
+    padding-left: 16px;
+  }
+  .col li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 6px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .col.acties li::before { background: var(--accent); }
+  .col li.done {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+  .col li.done::before { background: var(--border); }
+  .col .empty {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* HISTORIEK */
+  .phase-foot {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .phase-foot details { padding: 0; }
+  .phase-foot summary {
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--muted);
+    list-style: none;
+  }
+  .phase-foot summary::-webkit-details-marker { display: none; }
+  .phase-foot summary::before {
+    content: "+";
+    margin-right: 8px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .phase-foot details[open] summary::before { content: "–"; }
+  .phase-foot summary .count {
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-left: 6px;
+  }
+  .historiek-body {
+    padding: 0 24px 20px;
+  }
+  .historiek-month {
+    margin-bottom: 16px;
+  }
+  .historiek-month:last-child { margin-bottom: 0; }
+  .historiek-month-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-bottom: 4px;
+  }
+  .historiek-month ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .historiek-month li {
+    padding: 3px 0;
+    font-size: 14px;
+    color: var(--ink);
+    position: relative;
+    padding-left: 16px;
+  }
+  .historiek-month li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 6px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .historiek-month li.done {
+    color: var(--muted);
+  }
+  .historiek-empty {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 0 24px 20px;
+  }
+
+  @media (max-width: 860px) {
+    .phase-body { grid-template-columns: 1fr; }
+    .col { border-right: none; border-bottom: 1px solid var(--border); }
+    .col:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">Functionele analyse
+    <a href="index.html">→ Fase-flow</a>
+    <a href="to-be.html">→ De to-be</a>
+    <a href="touchpoints.html">→ Touchpoints</a>
+  </div>
+  <h1>Maandfocus per fase</h1>
+  <p class="lede">Het werkdocument naast de visie. Per fase: welke skills het team nodig heeft, welke acties we deze maand doen, en wat er al gebeurd is. Elke maand zetten we samen de focus.</p>
+
+  <div class="focus-card">
+    <div class="focus-month" id="focus-month"></div>
+    <div class="focus-label">Focus deze maand</div>
+    <div class="focus-text" id="focus-text"></div>
+  </div>
+
+  <div class="phases" id="phases"></div>
+
+</div>
+
+<script>
+// ============================================================
+// ALLE INHOUD STAAT HIER.
+// Maandritueel: focus en acties aanpassen, afgeronde maand
+// verhuist naar historiek (nieuwste bovenaan). Zie CLAUDE.md.
+// Een actie afvinken = done: true
+// ============================================================
+const DATA = {
+  maand: "juli 2026",
+  focus: "",  // leeg = nog te bepalen met het team
+
+  fases: [
+    {
+      num: 1,
+      titel: "Discovery",
+      sub: "Begrijpen wat het bedrijf echt nodig heeft",
+      skills: [
+        "Interviewtechniek: doorvragen tot de echte pijn",
+        "Jobs-to-be-done herkennen en formuleren",
+        "Stakeholder-mapping en politieke context lezen",
+        "AI-synthese kritisch lezen en valideren"
+      ],
+      acties: [
+        // { tekst: "…", done: false }
+      ],
+      historiek: [
+        // { maand: "juni 2026", acties: [ { tekst: "…", done: true } ] }
+      ]
+    },
+    {
+      num: 2,
+      titel: "Requirements en user stories",
+      sub: "Van behoefte naar concrete stories met acceptance criteria",
+      skills: [
+        "User stories schrijven met scherpe acceptance criteria",
+        "Scope-knopen durven doorhakken",
+        "AI-gegenereerde stories controleren op gaten en tegenstrijdigheden",
+        "Edge cases bevestigen met de business"
+      ],
+      acties: [],
+      historiek: []
+    },
+    {
+      num: 3,
+      titel: "Domain modeling",
+      sub: "Entiteiten, relaties, state machines",
+      skills: [
+        "ERD's lezen en beoordelen",
+        "Domeintaal expliciet vastleggen (2 A4 volstaat)",
+        "Model-varianten vergelijken en kiezen",
+        "State machines denken voor kernobjecten"
+      ],
+      acties: [],
+      historiek: []
+    },
+    {
+      num: 4,
+      titel: "Flows en prototype",
+      sub: "Direct van story naar klikbare UI",
+      skills: [
+        "Prompten voor UI-tools (v0, Figma Make, Claude)",
+        "UX-hiërarchie en smaak beoordelen",
+        "Snel itereren op klantfeedback",
+        "Prototype inzetten als gespreksinstrument"
+      ],
+      acties: [],
+      historiek: []
+    },
+    {
+      num: 5,
+      titel: "Prototype als spec naar productie",
+      sub: "Dev bouwt productieversie, het prototype is de referentie",
+      skills: [
+        "Code-review op intent, niet alleen op stijl",
+        "Architectuurkeuzes maken en uitleggen",
+        "Security- en privacybasics (DPA's, datastromen)",
+        "Testdenken: de test suite als levend contract"
+      ],
+      acties: [],
+      historiek: []
+    },
+    {
+      num: 6,
+      titel: "Continue validatie",
+      sub: "Drift detecteren tussen intent en implementatie",
+      skills: [
+        "Productmetrics lezen en interpreteren (PostHog)",
+        "Regressie onderscheiden van evolutie",
+        "Drift-check als release-ritueel draaien",
+        "Gebruikers observeren in productie"
+      ],
+      acties: [],
+      historiek: []
+    }
+  ]
+};
+
+// ---- rendering, hier hoef je niets aan te wijzigen ----
+function li(item) {
+  return `<li class="${item.done ? "done" : ""}">${item.tekst}</li>`;
+}
+
+document.getElementById("focus-month").textContent = DATA.maand;
+const focusEl = document.getElementById("focus-text");
+if (DATA.focus) {
+  focusEl.textContent = DATA.focus;
+} else {
+  focusEl.textContent = "Nog te bepalen met het team.";
+  focusEl.classList.add("empty");
+}
+
+document.getElementById("phases").innerHTML = DATA.fases.map(f => {
+  const acties = f.acties.length
+    ? `<ul>${f.acties.map(li).join("")}</ul>`
+    : `<div class="empty">Nog geen acties vastgelegd voor ${DATA.maand}.</div>`;
+
+  const histCount = f.historiek.reduce((n, m) => n + m.acties.length, 0);
+  const historiek = f.historiek.length
+    ? `<div class="historiek-body">${f.historiek.map(m => `
+        <div class="historiek-month">
+          <div class="historiek-month-label">${m.maand}</div>
+          <ul>${m.acties.map(li).join("")}</ul>
+        </div>`).join("")}</div>`
+    : `<div class="historiek-empty">Nog geen afgeronde maanden.</div>`;
+
+  return `
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">${f.num}</div>
+      <div>
+        <div class="phase-title">${f.titel}</div>
+        <div class="phase-sub">${f.sub}</div>
+      </div>
+      <a class="phase-link" href="index.html">mens/AI-verdeling →</a>
+    </div>
+    <div class="phase-body">
+      <div class="col">
+        <div class="col-label">Skills</div>
+        <ul>${f.skills.map(s => `<li>${s}</li>`).join("")}</ul>
+      </div>
+      <div class="col acties">
+        <div class="col-label">Acties deze maand<span class="month">${DATA.maand}</span></div>
+        ${acties}
+      </div>
+    </div>
+    <div class="phase-foot">
+      <details>
+        <summary>Historiek van acties<span class="count">${histCount ? histCount + " acties" : ""}</span></summary>
+        ${historiek}
+      </details>
+    </div>
+  </div>`;
+}).join("");
+</script>
+</body>
+</html>

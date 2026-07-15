@@ -7,6 +7,7 @@ Deze folder bevat drie visualisaties en deze methodologie-doc over hoe functione
 - `index.html` — de zes-fase flow met AI-rollen per fase (discovery → validatie)
 - `touchpoints.html` — swim-lane met klant, analist, dev. Handovers en rituelen.
 - `to-be.html` — de centrale to-be in één beeld: trio, loop, outcome, AI-laag
+- `maandfocus.html` — het werkdocument: per fase skills, acties deze maand en historiek, plus één teamfocus per maand
 - `CLAUDE.md` — dit bestand. De methodologie compact opgeschreven.
 
 Live op: https://antonaerts1-sys.github.io/functionele-analyse-2026/
@@ -148,6 +149,18 @@ Deze doc is een synthese van een deep-research (juni 2026) op:
 - Pawel Huryn MCP demo (maart 2025): Figma + Atlassian + Claude integratie
 
 Volledig rapport met 22 bronnen en 5 geweerde claims beschikbaar in vorige research-turn.
+
+## Maandritueel voor maandfocus.html
+
+Alle inhoud van `maandfocus.html` staat in het `DATA`-object onderin dat bestand. Anton werkt dit maandelijks bij via Claude, nooit met de hand. Zo gaat dat:
+
+1. Anton geeft de focus van de nieuwe maand en de acties per fase door.
+2. Verplaats de acties van de aflopende maand naar `historiek` van de betreffende fase (nieuwste maand bovenaan), met hun `done`-status zoals ze eindigden.
+3. Zet `maand` op de nieuwe maand, vul `focus` en de nieuwe `acties` in (`{ tekst: "…", done: false }`).
+4. Tussendoor mag ook: een actie afvinken (`done: true`) of acties toevoegen binnen de lopende maand.
+5. Commit en push naar `origin main`; GitHub Pages publiceert automatisch.
+
+Skills per fase zijn stabieler; pas die alleen aan als Anton daarom vraagt.
 
 ## Versie en update-discipline
 
