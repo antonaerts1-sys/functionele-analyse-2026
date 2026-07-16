@@ -9,7 +9,7 @@ Deze folder bevat drie visualisaties en deze methodologie-doc over hoe functione
 - `to-be.html` — de centrale to-be in één beeld: trio, loop, outcome, AI-laag
 - `maandfocus.html` — het werkdocument: per fase skills, acties deze maand en historiek, plus één teamfocus per maand
 - `verhaal.html` — hetzelfde fictieve klantproject (Mira, De Schakel) verteld in as-is naast to-be, met vergelijkingsbord en agency-consequenties (Bain-synthese)
-- `proces.html` — het volledige ontwikkelproces van A tot Z: zes principes, twee lussen (kwartaal + story-loop), vijf poorten, rollenbord (bestaat de FA nog?) en skills per rol
+- `proces.html` — het volledige ontwikkelproces van A tot Z voor klantwerk: zes principes, de projectboog (begin, midden, einde, met vervolg per kwartaal als optie) met daarin de story-loop, vijf poorten, rollenbord (bestaat de FA nog?) en skills per rol. Bewust vertaald van product- naar projectlogica; bouwblokken staan er niet in, dat doet Statik nog niet.
 - `CLAUDE.md` — dit bestand. De methodologie compact opgeschreven.
 
 Live op: https://antonaerts1-sys.github.io/functionele-analyse-2026/
