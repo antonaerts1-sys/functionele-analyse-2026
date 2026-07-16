@@ -151,6 +151,31 @@ Deze doc is een synthese van een deep-research (juni 2026) op:
 
 Volledig rapport met 22 bronnen en 5 geweerde claims beschikbaar in vorige research-turn.
 
+## Juridische onderbouwing bij het contractmodel (verhaal.html)
+
+Het contractmodel in `verhaal.html` (vaste prijs in twee opties na de prototype-dag, klein genoeg voor een lichte gunning, daarna een kwartaalbedrag) steunt op deze Belgische regelgeving. Uitgezocht via deep-research juli 2026, adversarieel geverifieerd, geen juridisch advies.
+
+### De 30.000 euro-drempel
+Een overheidsopdracht met een geraamde waarde lager dan 30.000 euro excl. btw is een "opdracht van beperkte waarde". Die kan tot stand komen via een aanvaarde factuur: geen aankondiging, geen bestek, geen formele offerteaanvraag nodig. Bevestigd via de officiële bron: wet van 17 juni 2016 inzake overheidsopdrachten (hoofdstuk rond artikel 92), toegelicht op [FOD BOSA](https://bosa.belgium.be/nl/themas/overheids-opdrachten/marktkenniscentrum/overheidsopdrachten-van-beperkte-waarde-klassieke).
+
+### Wanneer geldt dit voor een vzw: de functionele analyse (FA-test)
+Een vzw is niet automatisch onderworpen aan de overheidsopdrachtenwet. Ze telt pas mee als "aanbestedende overheid" als cumulatief voldaan is aan drie voorwaarden:
+1. Opgericht met het specifieke doel te voorzien in een behoefte van algemeen belang van niet-industriële of niet-commerciële aard
+2. Rechtspersoonlijkheid
+3. Overheidsafhankelijk: financiering in hoofdzaak door een overheid, of beheerstoezicht, of meer dan de helft van de bestuursleden aangewezen door een overheid
+
+Voldoet een vzw aan alle drie, dan geldt de **infectietheorie**: één enkele activiteit van algemeen belang trekt de hele organisatie onder de wet, ook haar andere, zuiver private activiteiten.
+
+Zelfs een vzw die zelf niet als aanbestedende overheid kwalificeert, kan voor één specifieke opdracht alsnog onder de wet vallen als die opdracht zwaar gesubsidieerd wordt door een aanbestedende overheid (cumulatieve voorwaarden rond het subsidiepercentage en het type werk).
+
+### Praktisch voor Statik
+- Bij een federale of overheidsklant (zoals CTRG) geldt de 30.000 euro-regel rechtstreeks en voorspelbaar
+- Bij een "gewone" vzw zonder overheidsafhankelijkheid geldt de wet mogelijk helemaal niet: vrijer dan gedacht, geen beperking op de offerte
+- Bij een zwaar gesubsidieerde of overheidsgestuurde vzw: vooraf checken via de FA-test of ze eronder valt. Valt ze eronder, dan blijft een project van 15.000 tot 30.000 euro nog steeds binnen het lichte aanvaarde-factuur-regime
+
+### Wat nog niet onderzocht is
+Doorlopende kwartaalfacturatie binnen subsidie-enveloppes (bouwsteen 6 van het onderzoek) is niet apart bronbevestigd. Dat blijft een logische afleiding, geen getoetst feit. Bij twijfel over een concreet geval: juridisch checken, dit is geen advocaat-advies.
+
 ## Maandritueel voor maandfocus.html
 
 Alle inhoud van `maandfocus.html` staat in het `DATA`-object onderin dat bestand. Anton werkt dit maandelijks bij via Claude, nooit met de hand. Zo gaat dat:
