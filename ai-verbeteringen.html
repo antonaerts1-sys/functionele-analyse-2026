@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zo werken we aan AI-verbeteringen</title>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#FAFAF7; --card:#FFFFFF; --card2:#F1F1EC;
+    --ink:#141412; --ink2:#5C5B55; --line:#E4E3DC;
+    --groen:#00B80B; --groen-bg:#E3F7E4; --groen-ink:#046B0C;
+    --magenta:#E333D0; --magenta-bg:#FBE8F8; --magenta-ink:#8F1B83;
+    --blauw:#2F7BF0; --blauw-bg:#E7F0FE; --blauw-ink:#1A4FA8;
+    --amber:#E8A33D; --amber-bg:#FBF0DC; --amber-ink:#7A4E06;
+    --rood:#C2410C;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#131312; --card:#1D1D1B; --card2:#242422;
+      --ink:#F1F0EA; --ink2:#A3A29A; --line:#31312D;
+      --groen:#2BD53A; --groen-bg:#12300F; --groen-ink:#7BE884;
+      --magenta:#F056DF; --magenta-bg:#3A1136; --magenta-ink:#F49BE9;
+      --blauw:#5D9BFF; --blauw-bg:#12233F; --blauw-ink:#9EC2FF;
+      --amber:#EFB558; --amber-bg:#37270D; --amber-ink:#F3CE8E;
+      --rood:#F08B5F;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#FAFAF7; --card:#FFFFFF; --card2:#F1F1EC;
+    --ink:#141412; --ink2:#5C5B55; --line:#E4E3DC;
+    --groen:#00B80B; --groen-bg:#E3F7E4; --groen-ink:#046B0C;
+    --magenta:#E333D0; --magenta-bg:#FBE8F8; --magenta-ink:#8F1B83;
+    --blauw:#2F7BF0; --blauw-bg:#E7F0FE; --blauw-ink:#1A4FA8;
+    --amber:#E8A33D; --amber-bg:#FBF0DC; --amber-ink:#7A4E06;
+    --rood:#C2410C;
+  }
+  :root[data-theme="dark"]{
+    --bg:#131312; --card:#1D1D1B; --card2:#242422;
+    --ink:#F1F0EA; --ink2:#A3A29A; --line:#31312D;
+    --groen:#2BD53A; --groen-bg:#12300F; --groen-ink:#7BE884;
+    --magenta:#F056DF; --magenta-bg:#3A1136; --magenta-ink:#F49BE9;
+    --blauw:#5D9BFF; --blauw-bg:#12233F; --blauw-ink:#9EC2FF;
+    --amber:#EFB558; --amber-bg:#37270D; --amber-ink:#F3CE8E;
+    --rood:#F08B5F;
+  }
+  body{background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.55;margin:0;}
+  .page{max-width:780px;margin:0 auto;padding:56px 22px 90px;}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:10px;}
+  .eyebrow::before{content:"";width:26px;height:14px;border-radius:8px;background:var(--groen);}
+  h1{font-size:clamp(30px,5.5vw,42px);font-weight:800;letter-spacing:-.02em;
+    line-height:1.08;margin:14px 0 10px;text-wrap:balance;}
+  .lede{font-size:16.5px;color:var(--ink2);max-width:56ch;margin:0 0 46px;}
+  .lede b{color:var(--ink);font-weight:600;}
+
+  .flow{position:relative;}
+  .flow::before{content:"";position:absolute;left:17px;top:8px;bottom:8px;
+    width:2px;background:var(--line);}
+  .station{position:relative;display:grid;grid-template-columns:36px 1fr;
+    gap:18px;margin-bottom:40px;}
+  .station:last-child{margin-bottom:0;}
+  .node{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;
+    box-shadow:0 0 0 5px var(--bg);}
+  .n1{background:var(--blauw);} .n2{background:var(--magenta);}
+  .n3{background:var(--amber);color:#3A2607;} .n4{background:var(--blauw);}
+  .n5{background:var(--groen);color:#04340A;}
+  @media (prefers-color-scheme: dark){ .n3{color:#2A1B04;} .n5{color:#062D0B;} }
+
+  .body h2{font-size:19px;font-weight:750;margin:5px 0 6px;letter-spacing:-.01em;}
+  .body>p{margin:0 0 14px;color:var(--ink2);font-size:14.5px;max-width:58ch;}
+  .body>p b{color:var(--ink);font-weight:600;}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;}
+
+  .kwartalen{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .kw{border-radius:9px;padding:8px 13px;font-family:var(--mono);font-size:12px;
+    background:var(--card2);color:var(--ink2);}
+  .kw.on{background:var(--ink);color:var(--bg);font-weight:700;}
+  .kwpijl{color:var(--ink2);font-family:var(--mono);font-size:13px;}
+
+  .mini{max-width:330px;}
+  .mini .mt{font-weight:650;font-size:14px;margin-bottom:8px;}
+  .mini .mr{display:flex;justify-content:space-between;align-items:center;gap:8px;
+    font-size:12.5px;color:var(--ink2);}
+  .pill{font-family:var(--mono);font-size:10.5px;font-weight:600;
+    padding:2px 9px;border-radius:20px;white-space:nowrap;}
+  .p-onderzoek{background:var(--amber-bg);color:var(--amber-ink);}
+  .p-uitrol{background:var(--blauw-bg);color:var(--blauw-ink);}
+  .p-ingebed{background:var(--groen-bg);color:var(--groen-ink);}
+  .vragen{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+  .vraag{font-family:var(--mono);font-size:11px;color:var(--ink2);
+    border:1px dashed var(--line);border-radius:7px;padding:3px 9px;}
+  .bron{border:1.5px dashed var(--magenta);background:var(--magenta-bg);
+    border-radius:12px;padding:12px 15px;max-width:430px;}
+  .bron .bw{font-family:var(--mono);font-size:10.5px;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--magenta-ink);margin-bottom:4px;}
+  .bron .bd{font-size:12.5px;color:var(--magenta-ink);line-height:1.5;}
+  .bronpijl{margin:8px 0 8px 18px;color:var(--ink2);font-size:15px;
+    display:flex;align-items:center;gap:8px;}
+  .bronpijl span{font-size:11.5px;font-family:var(--mono);}
+
+  .ladder{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .trede{flex:1 1 150px;min-width:150px;border-radius:11px;padding:11px 13px;}
+  .t-o{background:var(--amber-bg);} .t-u{background:var(--blauw-bg);} .t-i{background:var(--groen-bg);}
+  .trede .tt{font-family:var(--mono);font-size:11px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+  .t-o .tt{color:var(--amber-ink);} .t-u .tt{color:var(--blauw-ink);} .t-i .tt{color:var(--groen-ink);}
+  .trede .td{font-size:12.5px;line-height:1.45;}
+  .t-o .td{color:var(--amber-ink);} .t-u .td{color:var(--blauw-ink);} .t-i .td{color:var(--groen-ink);}
+  .lpijl{color:var(--ink2);font-size:15px;flex:0 0 auto;}
+  .uitweg{margin-top:10px;font-size:12.5px;color:var(--ink2);}
+  .uitweg b{font-weight:600;color:var(--ink);}
+
+  .ritme{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+  .moment{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;}
+  .moment .mw{font-family:var(--mono);font-size:10.5px;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--blauw-ink);margin-bottom:4px;}
+  .moment .md{font-size:12.5px;color:var(--ink2);line-height:1.5;}
+  .moment .md b{color:var(--ink);font-weight:600;}
+  .stil{margin-top:12px;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink2);}
+  .stil .dot{width:9px;height:9px;border-radius:3px;background:var(--rood);flex:0 0 auto;}
+  .stil b{color:var(--rood);font-weight:650;}
+
+  .balans{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+  .uitkomst{border-radius:11px;padding:12px 14px;background:var(--card);border:1px solid var(--line);}
+  .uitkomst.groen{background:var(--groen-bg);border-color:transparent;}
+  .uitkomst .uw{font-family:var(--mono);font-size:10.5px;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;color:var(--ink2);}
+  .uitkomst.groen .uw{color:var(--groen-ink);}
+  .uitkomst .ud{font-size:12.5px;color:var(--ink2);line-height:1.5;}
+  .uitkomst.groen .ud{color:var(--groen-ink);}
+  .uitkomst .ud b{font-weight:650;color:inherit;}
+
+  .vb{margin-top:12px;display:flex;gap:9px;align-items:flex-start;
+    font-size:12px;color:var(--ink2);line-height:1.5;}
+  .vb .tag{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.09em;
+    text-transform:uppercase;background:var(--card2);border-radius:5px;
+    padding:2px 7px;flex:0 0 auto;margin-top:1px;color:var(--ink2);}
+
+  .voet{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink2);max-width:60ch;}
+  .voet b{color:var(--ink);font-weight:600;}
+</style>
+
+<div class="page">
+  <div class="eyebrow">The Kind Kids &middot; spoor 1</div>
+  <h1>Zo werken we aan AI-verbeteringen</h1>
+  <p class="lede">Kleine, afgebakende projecten die pas tellen als het hele team ze gebruikt. <b>Elke maand zichtbare progressie</b>, elk kwartaal de balans.</p>
+
+  <div class="flow">
+
+    <div class="station">
+      <div class="node n1">01</div>
+      <div class="body">
+        <h2>Het kwartaal is de bak</h2>
+        <p>We werken per OKR-fase van drie maanden. Daarbinnen leven alle projecten. Op het einde maken we de balans op en starten we de volgende fase schoon.</p>
+        <div class="panel kwartalen">
+          <span class="kw on">Fase 1 &middot; juni - aug</span>
+          <span class="kwpijl">&rarr;</span>
+          <span class="kw">balans</span>
+          <span class="kwpijl">&rarr;</span>
+          <span class="kw">Fase 2 &middot; sep - nov</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="station">
+      <div class="node n2">02</div>
+      <div class="body">
+        <h2>Lanceer afgebakende projecten</h2>
+        <p>We kiezen ze uit de <b>to-be journey</b>: de kaart van jullie werkproces die per fase toont wat de mens doet en waar AI kan versnellen. Klein genoeg om af te maken, concreet genoeg om op te volgen. Een fase zonder project is geen probleem, het is een uitnodiging.</p>
+        <div class="bron">
+          <div class="bw">To-be journey &middot; de menukaart</div>
+          <div class="bd">Per fase: mens doet &middot; AI doet &middot; output &middot; tools. Elk team werkt zijn eigen journey uit en die groeit elk kwartaal mee.</div>
+        </div>
+        <div class="bronpijl">&darr; <span>daaruit kiezen we</span></div>
+        <div class="panel mini">
+          <div class="mt">Spec-driven development</div>
+          <div class="mr"><span>Sten &middot; dev lead</span><span class="pill p-uitrol">uitrol</span></div>
+          <div class="vragen">
+            <span class="vraag">wat?</span><span class="vraag">wie?</span><span class="vraag">waaraan zie je dat het af is?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="station">
+      <div class="node n3">03</div>
+      <div class="body">
+        <h2>Elk project doorloopt een levensloop</h2>
+        <p>Zelf iets uitproberen is niet hetzelfde als team-breed ingebed. Alleen die laatste stap telt.</p>
+        <div class="ladder">
+          <div class="trede t-o"><div class="tt">Onderzoek</div><div class="td">E&eacute;n iemand zoekt uit of en hoe het werkt.</div></div>
+          <span class="lpijl">&rarr;</span>
+          <div class="trede t-u"><div class="tt">Uitrol</div><div class="td">Schalen naar het hele team: skill, onboarding, afspraken.</div></div>
+          <span class="lpijl">&rarr;</span>
+          <div class="trede t-i"><div class="tt">Ingebed</div><div class="td">Iedereen doet het, zonder dat iemand moet duwen.</div></div>
+        </div>
+        <p class="uitweg"><b>Stoppen mag ook.</b> Een onderzoek dat nee zegt is een volwaardige uitkomst, met de reden erbij zodat niemand het later opnieuw uitvindt.</p>
+        <div class="vb"><span class="tag">voorbeeld</span><span>Sten onderzocht spec-driven development in juni: afgerond. De uitrol loopt nu. Ingebed is het pas als elk nieuw project zo start, zonder herinnering.</span></div>
+      </div>
+    </div>
+
+    <div class="station">
+      <div class="node n4">04</div>
+      <div class="body">
+        <h2>De maandelijkse cadans</h2>
+        <p>Progressie mag klein zijn, als ze er maar elke maand is.</p>
+        <div class="ritme">
+          <div class="moment"><div class="mw">Biweekly</div><div class="md">Projecten kort overlopen op de bestaande biweekly.</div></div>
+          <div class="moment"><div class="mw">Doorlopend</div><div class="md">Per project een <b>notitie</b>: wat bewoog er? Doorschuiven zodra een stap klaar is.</div></div>
+          <div class="moment"><div class="mw">Maandelijks</div><div class="md">Met een kleine groep de projecten <b>vastpinnen</b>: wat sluiten we af, wat lanceren we?</div></div>
+        </div>
+        <div class="stil"><span class="dot"></span><span>Een project dat <b>weken stilstaat</b> kleurt vanzelf. Dat is geen verwijt, het is het gesprek van de maand.</span></div>
+      </div>
+    </div>
+
+    <div class="station">
+      <div class="node n5">05</div>
+      <div class="body">
+        <h2>De kwartaalbalans</h2>
+        <p>Op het einde van de fase heeft elk project een eerlijke uitkomst.</p>
+        <div class="balans">
+          <div class="uitkomst groen"><div class="uw">Ingebed</div><div class="ud">Telt voor het doel: <b>drie per rol</b> tegen eind augustus.</div></div>
+          <div class="uitkomst"><div class="uw">Loopt nog</div><div class="ud">Gaat bewust mee naar de volgende fase, met zijn historiek.</div></div>
+          <div class="uitkomst"><div class="uw">Gestopt</div><div class="ud">Afgesloten met reden. Ook dat is een resultaat.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="voet">De opvolging gebeurt in het <b>visueel overzicht</b> van lopende projecten. De <b>to-be journey</b> is zelf ook een doelstelling van dit kwartaal: elk team heeft er tegen eind augustus een uitgewerkte versie van, en wat we uit de projecten leren vloeit er telkens in terug.</p>
+</div>
+</body>
+</html>
