@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>AI-verbeteringen tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1B6EF3; --blue-bg:#E7F0FE; --blue-fg:#0B4C9E;
+    --page:#F6F7F9; --card:#FFFFFF;
+    --ink:#1A1C1E; --ink2:#44474A; --ink3:#74777C;
+    --line:#E3E5E8; --line2:#CDD0D4;
+    --mono:'Roboto Mono',ui-monospace,monospace;
+    --amber-bg:#FDF0DC; --amber-fg:#7A4E06;
+    --green-bg:#E2F4EC; --green-fg:#0B6B4F;
+    --gray-bg:#EEF0F2; --gray-fg:#5F6368;
+    --red-fg:#9C3A1E;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:'Inter',-apple-system,system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1000px;margin:0 auto;padding:20px 20px 80px;}
+  button{font-family:inherit;cursor:pointer;}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:13px;}
+  .btn:hover{background:var(--page);}
+  .btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .btn-primary:hover{background:#155ad1;}
+  .btn-sm{padding:6px 10px;font-size:12px;}
+  input,select,textarea{width:100%;font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:#fff;color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-bg);}
+  textarea{resize:vertical;min-height:64px;}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);}
+
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .dot{width:26px;height:26px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:13px;}
+  .brand h1{margin:0;font-size:15px;font-weight:600;}
+  .brand p{margin:0;font-size:11.5px;color:var(--ink3);}
+  .qsel{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px;}
+  .qsel button{border:none;background:transparent;border-radius:7px;padding:6px 11px;font-size:12px;color:var(--ink2);font-family:var(--mono);}
+  .qsel button.on{background:var(--ink);color:#fff;}
+
+  .qhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .qhead .t{font-size:19px;font-weight:600;}
+  .qhead .s{font-size:12px;color:var(--ink3);margin-top:2px;}
+  .qhead .s b{color:var(--green-fg);}
+
+  .teams{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+  .tchip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 13px;font-size:12.5px;color:var(--ink2);}
+  .tchip.on{background:var(--blue-bg);border-color:#BBD5FB;color:var(--blue-fg);font-weight:500;}
+  .tchip .c{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-left:5px;}
+  .tchip.on .c{color:var(--blue-fg);}
+
+  .frow{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line);align-items:start;}
+  .fname .n{font-size:12.5px;font-weight:500;}
+  .fname .c{font-family:var(--mono);font-size:9.5px;color:var(--ink3);margin-top:2px;}
+  .cards{display:flex;flex-wrap:wrap;gap:8px;}
+  .pc{flex:1 1 240px;max-width:330px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;transition:border-color .12s,box-shadow .12s;}
+  .pc:hover{border-color:var(--blue);box-shadow:0 1px 6px rgba(27,110,243,.09);}
+  .pc .pn{font-size:12.5px;font-weight:500;line-height:1.35;margin-bottom:8px;}
+  .pc .pf{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .who{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);min-width:0;}
+  .av{width:19px;height:19px;flex:0 0 auto;border-radius:50%;background:var(--blue-bg);color:var(--blue-fg);display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;}
+  .st{font-family:var(--mono);font-size:9.5px;font-weight:500;padding:2px 8px;border-radius:20px;flex:0 0 auto;}
+  .s-o{background:var(--amber-bg);color:var(--amber-fg);}
+  .s-u{background:var(--blue-bg);color:var(--blue-fg);}
+  .s-i{background:var(--green-bg);color:var(--green-fg);}
+  .s-g{background:var(--gray-bg);color:var(--gray-fg);}
+  .moved{font-family:var(--mono);font-size:9.5px;color:var(--ink3);margin-top:7px;display:flex;align-items:center;gap:5px;}
+  .moved.stale{color:var(--red-fg);}
+  .addp{display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--line2);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--ink3);background:transparent;}
+  .addp:hover{border-color:var(--blue);color:var(--blue);}
+
+  .launch{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px;}
+  .launch .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .launch .fld{margin-bottom:10px;}
+  .launch label{font-size:11px;color:var(--ink2);display:block;margin-bottom:4px;}
+  .launch .acts{display:flex;justify-content:flex-end;gap:8px;}
+  .hidden{display:none;}
+
+  .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3);margin-bottom:16px;}
+  .crumb a{color:var(--blue);cursor:pointer;}
+  .detail{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:620px;}
+  .dhd{padding:15px 16px;border-bottom:1px solid var(--line);}
+  .dhd .dt{font-size:16px;font-weight:600;}
+  .dhd .ds{font-size:12px;color:var(--ink3);margin-top:2px;}
+  .ladder{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .lstep{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:20px;background:var(--gray-bg);color:var(--gray-fg);}
+  .lstep.done{background:var(--green-bg);color:var(--green-fg);}
+  .lstep.now{background:var(--blue-bg);color:var(--blue-fg);font-weight:500;}
+  .ladder .push{margin-left:auto;display:flex;gap:6px;}
+  .notes{padding:15px 16px;}
+  .nlist{margin-top:14px;}
+  .ni{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink2);line-height:1.5;}
+  .ni:first-child{border-top:none;}
+  .ni .d{font-family:var(--mono);font-size:10px;color:var(--ink3);flex:0 0 52px;margin-top:2px;}
+  .emptyq{background:var(--card);border:1px dashed var(--line2);border-radius:12px;padding:26px;text-align:center;color:var(--ink3);font-size:13px;line-height:1.6;}
+  @media(max-width:700px){.frow{grid-template-columns:1fr;gap:8px;}.launch .row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><div class="dot">AI</div>
+      <div><h1>AI-verbeteringen</h1><p>Spoor 1 &middot; Anton &amp; Eline</p></div></div>
+    <div id="qsel"></div>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+const IC={plus:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+ arr:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+ back:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+ clock:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>'};
+
+const FASEN=['onderzoek','uitrol','ingebed'];
+const SM={onderzoek:{l:'onderzoek',c:'s-o'},uitrol:{l:'uitrol',c:'s-u'},ingebed:{l:'ingebed',c:'s-i'},gestopt:{l:'gestopt',c:'s-g'}};
+
+const KW=[{id:'f1',naam:'Fase 1',periode:'juni - aug 2026'},{id:'f2',naam:'Fase 2',periode:'sep - nov 2026'}];
+const TEAMS=[
+ {id:'rhino',naam:'Rhino',fases:['Discovery','UX/UI design','Development','QA en testing','Go-live','Support']},
+ {id:'craft',naam:'Craft',fases:['Discovery','UX/UI design','Development','QA en testing','Go-live','Support']},
+ {id:'sm',naam:'Shaved Monkey',fases:['Strategie','Creatie','Review','Publicatie','Monitoring']},
+ {id:'gedeeld',naam:'Gedeeld',fases:['Lead generatie','Kwalificatie en intake','Voorstel en sales','Account management']}
+];
+
+let PID=1;
+function P(kwartaal,team,fase,naam,eigenaar,rol,status,laatst,notes){
+  return {id:PID++,kwartaal,team,fase,naam,eigenaar,rol,status,laatst,notes:notes||[]};
+}
+const PROJ=[
+ P('f1','rhino','Discovery','AI-interviewanalyse in de onderzoeksflow','Anton L','developer','uitrol','2026-07-18',
+   [{d:'2026-07-18',t:'Flow draait op 2 interviews. Transcriptie plus clustering werkt, samenvatting nog te ruw.'},
+    {d:'2026-06-24',t:'Onderzoek gestart, Otter en Claude naast elkaar gelegd.'}]),
+ P('f1','rhino','Development','Spec-driven development','Sten','dev lead','uitrol','2026-07-15',
+   [{d:'2026-07-15',t:'Uitrol gestart. Sten schrijft de skill deze maand, daarna alle devs onboarden.'},
+    {d:'2026-06-30',t:'Onderzoek afgerond: werkt goed op de 2 testprojecten. Beslissing om uit te rollen.'},
+    {d:'2026-06-10',t:'Sten test spec-driven aanpak op een lopend project.'}]),
+ P('f1','rhino','Development','PR-samenvattingen in de review-flow','Sten','developer','ingebed','2026-06-28',
+   [{d:'2026-06-28',t:'Elke PR krijgt nu automatisch een samenvatting. Draait bij iedereen.'}]),
+ P('f1','rhino','QA en testing','AI-testcases uit requirements','Sten','developer','onderzoek','2026-06-26',
+   [{d:'2026-06-26',t:'Eerste opzet bekeken, nog niet verder aan gewerkt.'}]),
+ P('f1','rhino','Support','AI-standaardantwoorden voor tickets','Sten','developer','onderzoek','2026-07-14',
+   [{d:'2026-07-14',t:'Top 5 terugkerende vragen verzameld uit Zendesk.'}]),
+
+ P('f1','craft','Discovery','Automatische contentinventaris bij audit','Jan B.','developer','ingebed','2026-06-20',
+   [{d:'2026-06-20',t:'Wordt bij elke audit gebruikt. Scheelt makkelijk een dag per project.'}]),
+ P('f1','craft','Development','Scaffolding-skill voor Craft-templates','Jan B.','developer','uitrol','2026-07-19',
+   [{d:'2026-07-19',t:'Skill werkt op standaardtemplates. Nu testen op een echte projectstart.'}]),
+ P('f1','craft','QA en testing','AI-taalcheck in de content-QA','Jan B.','content','onderzoek','2026-07-16',
+   [{d:'2026-07-16',t:'Getest op 1 oplevering, vangt veel maar niet alles.'}]),
+
+ P('f1','sm','Strategie','Contentkalender-generator','Lore','strateeg','onderzoek','2026-07-17',
+   [{d:'2026-07-17',t:'Eerste kalender gegenereerd voor DNS. Bruikbaar als startpunt, niet als eindresultaat.'}]),
+ P('f1','sm','Creatie','AI-copy workflow voor social','Lore','copywriter','ingebed','2026-07-15',
+   [{d:'2026-07-15',t:'Volledige campagne via de workflow gedraaid. Vast onderdeel nu.'}]),
+ P('f1','sm','Creatie','Moodboards met Firefly','Lore','art direction','onderzoek','2026-07-08',
+   [{d:'2026-07-08',t:'Eerste moodboards gemaakt, kwaliteit wisselend.'}]),
+
+ P('f1','gedeeld','Voorstel en sales','Offerte-skill voor terugkerende scopes','Anton A','sales','uitrol','2026-07-19',
+   [{d:'2026-07-19',t:'Skill gebruikt op de Icho-offerte. Scheelt veel tijd, teksten nog nalezen.'},
+    {d:'2026-07-02',t:'Historische scopes ontsloten als input.'}]),
+ P('f1','gedeeld','Account management','QBR-voorbereiding met AI-samenvatting','Cedric','account','ingebed','2026-06-25',
+   [{d:'2026-06-25',t:'Elke QBR wordt zo voorbereid.'}])
+];
+
+let state={kwartaal:'f1',team:'rhino',screen:'overzicht',pid:null,launchOpen:false};
+const VANDAAG=new Date('2026-07-20');
+function dagen(iso){return Math.round((VANDAAG-new Date(iso))/86400000);}
+function geleden(iso){const d=dagen(iso);
+  if(d<=0)return'vandaag'; if(d===1)return'gisteren'; if(d<14)return d+' dagen';
+  const w=Math.round(d/7); if(w<9)return w+' weken'; return Math.round(d/30)+' maanden';}
+function dfmt(iso){const p=iso.split('-');return p[2]+'/'+p[1];}
+function team(id){return TEAMS.find(t=>t.id===id);}
+function projs(){return PROJ.filter(p=>p.kwartaal===state.kwartaal);}
+function teamProjs(tid){return projs().filter(p=>p.team===tid);}
+function init(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2);}
+
+function render(){
+  document.getElementById('qsel').innerHTML=`<div class="qsel">${KW.map(k=>
+    `<button class="${k.id===state.kwartaal?'on':''}" onclick="setKw('${k.id}')">${k.naam}</button>`).join('')}</div>`;
+  document.getElementById('app').innerHTML=state.screen==='detail'?detail():overzicht();
+}
+function setKw(id){state.kwartaal=id;state.screen='overzicht';state.launchOpen=false;render();}
+function setTeam(id){state.team=id;state.launchOpen=false;render();}
+function open(pid){state.screen='detail';state.pid=pid;window.scrollTo(0,0);render();}
+function back(){state.screen='overzicht';window.scrollTo(0,0);render();}
+function toggleLaunch(){state.launchOpen=!state.launchOpen;render();}
+
+function overzicht(){
+  const kw=KW.find(k=>k.id===state.kwartaal);
+  const all=projs();
+  if(!all.length)return `<div class="qhead"><div><div class="t">${kw.naam}</div><div class="s">${kw.periode}</div></div></div>
+    <div class="emptyq">Nog niet gestart.<br>Bij het afsluiten van ${KW[0].naam} neem je de lopende projecten mee naar hier.</div>`;
+  const ing=all.filter(p=>p.status==='ingebed').length;
+  const t=team(state.team);
+  const mine=teamProjs(state.team);
+
+  const head=`<div class="qhead">
+    <div><div class="t">${kw.naam}</div><div class="s">${kw.periode} &middot; ${all.length} projecten &middot; <b>${ing} ingebed</b></div></div>
+    <button class="btn btn-primary" onclick="toggleLaunch()">${IC.plus}Project lanceren</button></div>`;
+
+  const launch=`<div class="launch ${state.launchOpen?'':'hidden'}">
+    <div class="row">
+      <div class="fld"><label>Fase</label><select id="l_fase">${t.fases.map(f=>`<option>${f}</option>`).join('')}</select></div>
+      <div class="fld"><label>Team</label><select id="l_team">${TEAMS.map(x=>`<option value="${x.id}" ${x.id===state.team?'selected':''}>${x.naam}</option>`).join('')}</select></div>
+    </div>
+    <div class="fld"><label>Wat gaan we doen</label><input id="l_naam" placeholder="AI-testcases uit requirements"></div>
+    <div class="row">
+      <div class="fld"><label>Eigenaar</label><input id="l_eig" placeholder="Sten"></div>
+      <div class="fld"><label>Rol</label><input id="l_rol" placeholder="developer"></div>
+    </div>
+    <div class="acts"><button class="btn" onclick="toggleLaunch()">Annuleren</button>
+      <button class="btn btn-primary" onclick="lanceer()">Lanceren</button></div></div>`;
+
+  const chips=`<div class="teams">${TEAMS.map(x=>{
+    const n=teamProjs(x.id).length;
+    return `<button class="tchip ${x.id===state.team?'on':''}" onclick="setTeam('${x.id}')">${x.naam}<span class="c">${n}</span></button>`;
+  }).join('')}</div>`;
+
+  const rows=t.fases.map(f=>{
+    const list=mine.filter(p=>p.fase===f);
+    const cards=list.length?list.map(p=>{
+      const s=SM[p.status],d=dagen(p.laatst),stale=d>=21&&p.status!=='ingebed';
+      return `<div class="pc" onclick="open(${p.id})">
+        <div class="pn">${p.naam}</div>
+        <div class="pf"><span class="who"><span class="av">${init(p.eigenaar)}</span>${p.eigenaar} &middot; ${p.rol}</span>
+          <span class="st ${s.c}">${s.l}</span></div>
+        <div class="moved ${stale?'stale':''}">${IC.clock}${geleden(p.laatst)}${stale?' geen beweging':''}</div>
+      </div>`;
+    }).join(''):`<button class="addp" onclick="toggleLaunch()">${IC.plus}project lanceren</button>`;
+    return `<div class="frow"><div class="fname"><div class="n">${f}</div>
+      <div class="c">${list.length} ${list.length===1?'project':'projecten'}</div></div>
+      <div class="cards">${cards}</div></div>`;
+  }).join('');
+
+  return head+launch+chips+rows;
+}
+
+function lanceer(){
+  const v=id=>document.getElementById(id).value.trim();
+  const tm=v('l_team');
+  PROJ.push(P(state.kwartaal,tm,v('l_fase'),v('l_naam')||'Nieuw project',v('l_eig')||'onbekend',v('l_rol')||'',
+    'onderzoek','2026-07-20',[{d:'2026-07-20',t:'Project gelanceerd.'}]));
+  state.team=tm;state.launchOpen=false;render();
+}
+
+function detail(){
+  const p=PROJ.find(x=>x.id===state.pid),t=team(p.team);
+  const idx=FASEN.indexOf(p.status);
+  const ladder=FASEN.map((f,i)=>{
+    const cls=p.status==='gestopt'?'':(i<idx?'done':i===idx?'now':'');
+    return `<span class="lstep ${cls}">${f}</span>`;
+  }).join('');
+  const volgende=idx>=0&&idx<FASEN.length-1?FASEN[idx+1]:null;
+  const push=p.status==='gestopt'?'<span class="st s-g">gestopt</span>':
+    `<div class="push">${volgende?`<button class="btn btn-sm btn-primary" onclick="schuif()">zet naar ${volgende} ${IC.arr}</button>`:''}
+     ${p.status!=='ingebed'?`<button class="btn btn-sm" onclick="stop()">stoppen</button>`:''}</div>`;
+  const notes=p.notes.map(n=>`<div class="ni"><span class="d">${dfmt(n.d)}</span><span>${n.t}</span></div>`).join('');
+  return `<div class="crumb"><a onclick="back()">${IC.back} ${t.naam}</a></div>
+   <div class="detail">
+     <div class="dhd"><div class="dt">${p.naam}</div>
+       <div class="ds">${t.naam} &middot; ${p.fase} &middot; ${p.eigenaar}${p.rol?' &middot; '+p.rol:''}</div></div>
+     <div class="ladder">${ladder}${push}</div>
+     <div class="notes">
+       <div class="lbl" style="margin-bottom:8px">Wat gebeurde er</div>
+       <textarea id="nt" placeholder="Schrijf wat er bewoog..."></textarea>
+       <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn btn-sm" onclick="note()">Notitie toevoegen</button></div>
+       <div class="nlist">${notes||'<div style="font-size:12.5px;color:var(--ink3)">Nog geen notities.</div>'}</div>
+     </div>
+   </div>`;
+}
+function schuif(){const p=PROJ.find(x=>x.id===state.pid);const i=FASEN.indexOf(p.status);
+  p.status=FASEN[i+1];p.laatst='2026-07-20';
+  p.notes.unshift({d:'2026-07-20',t:'Doorgeschoven naar '+p.status+'.'});render();}
+function stop(){const p=PROJ.find(x=>x.id===state.pid);p.status='gestopt';p.laatst='2026-07-20';
+  p.notes.unshift({d:'2026-07-20',t:'Gestopt.'});render();}
+function note(){const el=document.getElementById('nt'),v=el.value.trim();if(!v)return;
+  const p=PROJ.find(x=>x.id===state.pid);p.notes.unshift({d:'2026-07-20',t:v});p.laatst='2026-07-20';render();}
+render();
+</script>
+</body>
+</html>
