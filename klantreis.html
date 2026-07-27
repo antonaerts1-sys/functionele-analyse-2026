@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Klantreis en AI-kansen per fase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1B6EF3; --blue-bg:#E7F0FE; --blue-fg:#0B4C9E;
+    --page:#F6F7F9; --card:#FFFFFF;
+    --ink:#1A1C1E; --ink2:#44474A; --ink3:#74777C;
+    --line:#E3E5E8; --line2:#CDD0D4;
+    --radius:12px;
+    --mono:'Roboto Mono',ui-monospace,monospace;
+    --amber-bg:#FDF0DC; --amber-fg:#7A4E06; --amber:#E8A33D;
+    --green-bg:#E2F4EC; --green-fg:#0B6B4F; --green:#18A971;
+    --gray-bg:#EEF0F2; --gray-fg:#5F6368; --gray:#9AA0A6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:'Inter',-apple-system,system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1140px;margin:0 auto;padding:20px 20px 80px;}
+  .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);}
+  button{font-family:inherit;cursor:pointer;}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:13px;transition:background .12s;}
+  .btn:hover{background:var(--page);}
+  .btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .btn-primary:hover{background:#155ad1;}
+  .icon{width:1em;height:1em;display:inline-block;vertical-align:-2px;}
+  input,select{width:100%;font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:#fff;color:var(--ink);}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-bg);}
+  input::placeholder{color:var(--ink3);}
+
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .dot{width:26px;height:26px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;}
+  .brand h1{margin:0;font-size:16px;font-weight:600;}
+  .brand p{margin:0;font-size:11.5px;color:var(--ink3);}
+  .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3);margin-bottom:18px;flex-wrap:wrap;}
+  .crumb a{color:var(--blue);cursor:pointer;text-decoration:none;}
+  .crumb a:hover{text-decoration:underline;}
+
+  .months{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px;}
+  .months button{border:none;background:transparent;border-radius:7px;padding:6px 12px;font-size:12.5px;color:var(--ink2);font-family:var(--mono);}
+  .months button.on{background:var(--blue);color:#fff;}
+
+  .band{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;}
+  .bandlbl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;}
+  .faserow{display:flex;gap:8px;flex-wrap:wrap;}
+  .flowarrow{display:flex;justify-content:center;color:var(--line2);margin:9px 0;}
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .lane{border-radius:12px;padding:11px;border:1px solid;}
+  .lanehd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .lanehd .nm{font-size:14px;font-weight:600;}
+  .lanehd .tr{font-size:10px;font-family:var(--mono);}
+  .lane.p{background:#F3F2FD;border-color:#D9D5F5;} .lane.p .nm{color:#3C3489;} .lane.p .tr{color:#7F77DD;}
+  .lane.t{background:#EBF7F1;border-color:#BFE8D8;} .lane.t .nm{color:#085041;} .lane.t .tr{color:#1D9E75;}
+  .lane.c{background:#FCF0EB;border-color:#F3D3C6;} .lane.c .nm{color:#712B13;} .lane.c .tr{color:#D85A30;}
+
+  .fblock{flex:1 1 0;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 11px;cursor:pointer;transition:border-color .12s,box-shadow .12s;}
+  .lane .fblock{margin-bottom:7px;}
+  .fblock:hover{border-color:var(--blue);box-shadow:0 1px 5px rgba(27,110,243,.08);}
+  .fblock .fn{font-size:12.5px;font-weight:500;}
+  .fblock .meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;align-items:center;}
+  .fblock .taken{font-size:10.5px;color:var(--ink3);font-family:var(--mono);}
+  .mpill{font-family:var(--mono);font-size:9px;font-weight:500;padding:1px 6px;border-radius:20px;}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .sw{width:9px;height:9px;border-radius:3px;}
+
+  .dmtitle{font-size:18px;font-weight:600;margin:2px 0 4px;}
+  .dmsub{font-size:12px;color:var(--ink3);margin-bottom:16px;}
+  .maptitle{font-size:16px;font-weight:600;margin:34px 0 4px;}
+  .mapsub{font-size:12px;color:var(--ink3);margin-bottom:16px;}
+  .dmcols{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .dmcol .ch{margin-bottom:10px;}
+  .dmcol .cn{font-size:14px;font-weight:600;}
+  .dmcol .cc{font-size:11px;color:var(--ink3);margin-top:1px;}
+  .dmcol .cc b{color:var(--green-fg);}
+  .dmcol .shared{font-size:9.5px;font-family:var(--mono);color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:9px;cursor:pointer;transition:border-color .12s,box-shadow .12s;}
+  .pcard:hover{border-color:var(--blue);box-shadow:0 1px 6px rgba(27,110,243,.10);}
+  .pcard .tk{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;}
+  .pcard .tt{font-size:12.5px;font-weight:500;line-height:1.35;margin-bottom:9px;}
+  .pcard .ft{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+  .who{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);}
+  .av{width:19px;height:19px;flex:0 0 auto;border-radius:50%;background:var(--blue-bg);color:var(--blue-fg);display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;}
+  .empty{border:1px dashed var(--line2);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--ink3);font-size:12px;background:transparent;width:100%;}
+  @media(max-width:820px){ .dmcols{grid-template-columns:1fr 1fr;} }
+
+  .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px;margin-right:8px;}
+  .seg button{border:none;background:transparent;border-radius:7px;padding:6px 12px;font-size:12.5px;color:var(--ink2);}
+  .seg button.on{background:var(--ink);color:#fff;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .stat .sn{font-size:26px;font-weight:600;line-height:1;}
+  .stat .sl{font-size:11px;color:var(--ink3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;margin-top:6px;}
+  .roles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .rolechip{font-family:var(--mono);font-size:10px;background:var(--gray-bg);color:var(--gray-fg);padding:2px 8px;border-radius:20px;}
+  .rolechip.ok{background:var(--green-bg);color:var(--green-fg);}
+  @media(max-width:820px){ .stats{grid-template-columns:1fr 1fr;} }
+
+  .h2row{font-size:19px;font-weight:600;margin:0 0 4px;}
+  .subrow{font-size:12px;color:var(--ink3);font-family:var(--mono);margin-bottom:18px;}
+  .tsec{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:4px 0 10px;}
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  
+  .tcard .hd{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line);}
+  .num{width:28px;height:28px;flex:0 0 auto;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}
+  .tcard .hn{font-size:14px;font-weight:500;}
+  .tcard .hs{font-size:11.5px;color:var(--ink3);}
+  .triple{display:grid;grid-template-columns:1fr 1fr 1fr;}
+  .triple > div{padding:11px 13px;border-right:1px solid var(--line);}
+  .triple > div:last-child{border-right:none;}
+  .triple .cl{margin-bottom:7px;}
+  .triple p{margin:0;font-size:11.5px;color:var(--ink2);line-height:1.45;}
+  .tfoot{display:flex;align-items:center;gap:9px;padding:10px 14px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .chip{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-radius:6px;padding:3px 8px;color:var(--ink2);}
+  .pill{font-family:var(--mono);font-size:9.5px;font-weight:500;padding:2px 8px;border-radius:20px;}
+
+  .detail{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:640px;}
+  .detail .hd{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line);}
+  .detail .hd .grow{flex:1;}
+  .detail .hd .hn{font-size:16px;font-weight:600;}
+  .detail .hd .hs{font-size:12px;color:var(--ink3);}
+  .kpi{text-align:right;}
+  .kpi .n{font-size:20px;font-weight:600;color:var(--green-fg);line-height:1;}
+  .kpi .l{font-size:9.5px;color:var(--ink3);font-family:var(--mono);margin-top:3px;}
+  .innsec{padding:16px;}
+  .innhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .nowcard{background:var(--blue-bg);border:1px solid #BBD5FB;border-radius:10px;padding:13px 14px;margin-bottom:18px;}
+  .nowcard .nh{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+  .nowcard .ntt{font-size:13.5px;font-weight:600;color:var(--blue-fg);margin-bottom:7px;}
+  .meta2{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--blue-fg);}
+  .meta2 span{display:inline-flex;align-items:center;gap:5px;}
+
+  .tl{position:relative;padding-left:24px;}
+  .tl .rail{position:absolute;left:5px;top:5px;bottom:5px;width:1.5px;background:var(--line2);}
+  .tl .it{position:relative;margin-bottom:18px;}
+  .tl .it:last-child{margin-bottom:0;}
+  .tl .nd{position:absolute;left:-24px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--card);}
+  .tl .mrow{display:flex;align-items:center;gap:9px;margin-bottom:3px;}
+  .tl .mo{font-family:var(--mono);font-size:11px;color:var(--ink3);}
+  .tl .tt{font-size:13px;font-weight:500;}
+  .tl .ds{font-size:11.5px;color:var(--ink2);margin-top:2px;}
+
+  .addform{background:var(--page);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;}
+  .addform label{font-size:11px;color:var(--ink2);display:block;margin-bottom:4px;}
+  .addform .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .addform .fld{margin-bottom:10px;}
+  .addform .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
+  .hidden{display:none;}
+
+  @media(max-width:820px){ .lanes{grid-template-columns:1fr;} .tgrid{grid-template-columns:1fr;} .triple{grid-template-columns:1fr;} .triple > div{border-right:none;border-bottom:1px solid var(--line);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="dot">AI</div>
+      <div><h1>Klantreis en AI-kansen</h1><p>The Kind Kids &middot; de volledige delivery</p></div>
+    </div>
+    <div id="topright"></div>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+const svg = {
+  chevR:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>',
+  down:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  plus:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+  user:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>',
+  target:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>'
+};
+const ST = {roadmap:{l:'roadmap',bg:'var(--gray-bg)',fg:'var(--gray-fg)',d:'#C4C7CC'},
+  loopt:{l:'loopt',bg:'var(--blue-bg)',fg:'var(--blue-fg)',d:'var(--blue)'},
+  uitgeprobeerd:{l:'uitgeprobeerd',bg:'var(--amber-bg)',fg:'var(--amber-fg)',d:'var(--amber)'},
+  ingebed:{l:'ingebed',bg:'var(--green-bg)',fg:'var(--green-fg)',d:'var(--green)'},
+  gestopt:{l:'gestopt',bg:'var(--gray-bg)',fg:'var(--gray-fg)',d:'var(--gray)'}};
+const MO={mei:1,juni:2,juli:3}; const MLABEL={mei:'mei 2026',juni:'juni 2026',juli:'juli 2026'};
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2);}
+function T(naam,sub,mens,ai,output,tools,projecten){return {naam,sub,mens,ai,output,tools,projecten:projecten||[]};}
+
+const DATA={groups:[
+ {id:'sales',kind:'shared',naam:'Gedeeld &middot; sales (overkoepelend)',band:'top',fases:[
+   {id:'lead',naam:'Lead generatie',taken:[
+     T('Prospectie en outreach sales','Netwerk en koude outreach',
+       'Relaties bouwen, vertrouwen winnen, juiste timing en toon aanvoelen',
+       'Doelgroeplijsten verrijken en segmenteren, eerste outreach-teksten, research per prospect',
+       'Verrijkte prospectlijst, outreach-drafts',['Sales Navigator','Claude','Apollo'],
+       [{maand:'juli',titel:'AI-verrijkte prospectlijsten voor spoor 2',eigenaar:'Tim',rol:'sales',meetbaar:'1 gesegmenteerde lijst van 50 prospects tegen 31/7',status:'uitgeprobeerd'}]),
+     T('Contentmarketing en inbound','Blogs, social, SEO',
+       'Strategische keuzes, merkstem bewaken, storytelling',
+       'Eerste drafts blogs en social posts, ideation, SEO-optimalisatie',
+       'Contentdrafts, SEO-voorstellen',['Claude','Surfer SEO','Buffer']),
+     T('Netwerken en partnerships','Events en samenwerkingen',
+       'Vertrouwen opbouwen, events bijwonen, deals informeel aftasten',
+       'Voorbereiding op gesprekken via bedrijfsresearch, follow-up mails',
+       'Gespreksprep, follow-ups',['Claude','LinkedIn']),
+     T('Lead scoring en CRM-opvolging','Prioriteren van leads',
+       'Prioriteiten stellen tussen leads, gevoel voor koopintentie',
+       'Leads automatisch scoren en segmenteren, follow-up reminders en samenvattingen',
+       'Gescoorde pipeline, reminders',['HubSpot','Claude'])
+   ]},
+   {id:'kwal',naam:'Kwalificatie &amp; intake',taken:[
+     T('Discovery call','Eerste kennismakingsgesprek',
+       'Actief luisteren, vertrouwen winnen, onuitgesproken noden aanvoelen',
+       'Gespreksvoorbereiding via research, automatische transcriptie en samenvatting',
+       'Gespreksnotities, klantprofiel',['Fireflies','Claude']),
+     T('Briefing tot requirements','Brief structureren',
+       'Doorvragen, klantcontext aanvoelen, prioriteiten scheiden van nice-to-haves',
+       'Gespreksnotities structureren tot requirements-doc, ontbrekende info detecteren',
+       'Requirements-document',['Claude','Notion'],
+       [{maand:'juni',titel:'Vast briefing-naar-requirements sjabloon met AI',eigenaar:'Tim',rol:'sales',meetbaar:'gebruikt bij elke nieuwe intake',status:'ingebed'}]),
+     T('Budget- en scope-inschatting','Haalbaarheid en uren',
+       'Ervaring over haalbaarheid, risico-inschatting',
+       'Vergelijkbare projecten uit historiek ophalen, eerste scope- en uren-inschatting',
+       'Scope- en urenschatting',['Claude','Projectendossier']),
+     T('Interne go/no-go','Beslissing om te starten',
+       'Strategische afweging of dit bij ons past, teamcapaciteit inschatten',
+       'Samenvatting van intake plus risico\'s als beslissingsdocument',
+       'Go/no-go-document',['Claude'])
+   ]},
+   {id:'voorstel',naam:'Voorstel &amp; sales',taken:[
+     T('Offerte opstellen','Scope, prijs, voorstel',
+       'Pricing-strategie, onderhandelen, klantrelatie',
+       'Eerste offerte-draft op basis van scope, scope-schatting via historische projecten',
+       'Consistente offerte, scope-document',['Claude','PandaDoc'],
+       [{maand:'juli',titel:'Offerte-skill voor terugkerende scopes',eigenaar:'Anton A',rol:'sales',meetbaar:'skill gebruikt op 2 echte offertes tegen 31/7',status:'loopt'},
+        {maand:'juni',titel:'Historische scope-database als offerte-input',eigenaar:'Tim',rol:'sales',meetbaar:'top 20 scopes ontsloten en herbruikbaar',status:'ingebed'}]),
+     T('Pitch voorbereiden','Presentatie en slides',
+       'Storytelling, live overtuigingskracht, inspelen op reacties',
+       'Presentatie-outline en slides genereren, visuals en voorbeelden voorstellen',
+       'Pitch-deck, outline',['Claude','Gamma']),
+     T('Onderhandeling en contractering','Contract sluiten',
+       'Onderhandelen, relatiebeheer, juridische afwegingen',
+       'Contractclausules opzoeken en voorstellen, wijzigingen samenvatten',
+       'Contract, clausule-overzicht',['Claude','PandaDoc']),
+     T('Kickoff-planning afstemmen','Start met klant plannen',
+       'Verwachtingen afstemmen, relatie opstarten',
+       'Planning en agenda opstellen, actiepunten en rollen documenteren',
+       'Kickoff-planning',['Claude','Asana'])
+   ]}
+ ]},
+
+ {id:'rhino',kind:'team',naam:'Rhino',lane:'p',traject:'custom development',fases:[
+   {id:'disc',naam:'Discovery',taken:[
+     T('Kick-off meeting','Verwachtingen en team',
+       'Verwachtingen afstemmen, teamdynamiek opzetten, vertrouwen bouwen',
+       'Agenda en voorbereidingsdocument opstellen, notulen en actiepunten',
+       'Agenda, notulen, actiepunten',['Claude','Fireflies']),
+     T('Workshops (stakeholder alignment)','Belangen verzoenen',
+       'Groepsdynamiek faciliteren, conflicterende belangen verzoenen',
+       'Workshopoefeningen voorbereiden, output clusteren en samenvatten',
+       'Geclusterde output, samenvatting',['Miro','Claude']),
+     T('Gebruikersonderzoek','Interviews en surveys',
+       'Empathisch interviewen, non-verbale signalen oppikken, diepte-inzicht',
+       'Interviewvragen opstellen, transcriberen, patronen en thema\'s halen',
+       'Gevalideerde inzichten, thema-clusters',['Otter.ai','Claude','Typeform'],
+       [{maand:'juli',titel:'AI-interviewanalyse vast in de onderzoeksflow',eigenaar:'Anton L',rol:'developer',meetbaar:'2 interviews volledig via de flow tegen 31/7',status:'loopt'},
+        {maand:'juni',titel:'Transcriptie-workflow met Otter en Claude',eigenaar:'Sten',rol:'dev',meetbaar:'elke interview automatisch getranscribeerd',status:'ingebed'},
+        {maand:'mei',titel:'Testronde AI-interviewvragen',eigenaar:'Anton L',rol:'developer',meetbaar:'getest op 1 project, nog niet structureel',status:'uitgeprobeerd'}]),
+     T('Technische architectuur','Requirements en trade-offs',
+       'Architectuurkeuzes, risico-inschatting, technische trade-offs',
+       'Vergelijkbare architecturen researchen, documentatie en diagrammen genereren',
+       'Requirements-document, architectuurschets',['Claude','Excalidraw']),
+     T('Service design / journey mapping','Klantperspectief',
+       'Holistisch klantperspectief, creatieve synthese',
+       'Eerste journey-map opstellen op basis van onderzoek, pijnpunten clusteren',
+       'Journey-map, pijnpuntenlijst',['Figjam','Claude'])
+   ]},
+   {id:'uxui',naam:'UX/UI design',taken:[
+     T('Wireframing','Structuur en flow',
+       'Informatiearchitectuur, gebruiksvriendelijkheid inschatten',
+       'Wireframe-varianten genereren op basis van requirements',
+       'Wireframe-set',['Figma','Claude']),
+     T('Visueel ontwerp','UI design',
+       'Merkgevoel, esthetiek, creatieve keuzes',
+       'UI-copy, kleurvarianten en iconografie-suggesties',
+       'UI-ontwerp, stijlopties',['Figma','Claude']),
+     T('Prototyping en gebruikerstests','Testen met gebruikers',
+       'Testafname, interpretatie van gebruikersgedrag',
+       'Testscript opstellen, resultaten en observaties samenvatten',
+       'Prototype, testrapport',['Figma','Maze','Claude']),
+     T('Design review met klant','Feedback verwerken',
+       'Feedback opvangen en vertalen, klantrelatie',
+       'Reviewnotities structureren tot actiepunten',
+       'Actiepunten uit review',['Claude','Figma'])
+   ]},
+   {id:'dev',naam:'Development',taken:[
+     T('Technische opzet','Project setup',
+       'Architecturale beslissingen over stack en structuur',
+       'Boilerplate en scaffolding genereren, repo-structuur opzetten',
+       'Werkende projectstructuur',['Claude Code','Copilot'],
+       [{maand:'mei',titel:'Scaffolding met Claude Code voor nieuwe modules',eigenaar:'Anton L',rol:'developer',meetbaar:'1 module gescaffold, tijdswinst gemeten',status:'uitgeprobeerd'}]),
+     T('Sprint-planning','Prioriteren en schatten',
+       'Prioriteren, capaciteit inschatten, afhankelijkheden herkennen',
+       'Taken opsplitsen en schatten op basis van backlog, sprintdoc opstellen',
+       'Sprintplanning, schattingen',['Claude','Linear']),
+     T('Front-end/back-end bouw','De eigenlijke bouw',
+       'Complexe business logica, architecturale keuzes tijdens bouw',
+       'Code genereren, refactoren, unit tests schrijven',
+       'Werkende features, tests',['Claude Code','Copilot','Cursor']),
+     T('Code review en integratie','Kwaliteit bewaken',
+       'Kwaliteitsbewaking, kritische blik op edge cases en security',
+       'Eerste automatische review en linting, samenvatting van pull request',
+       'Gereviewde, spec-conforme code',['Claude Code','GitHub'],
+       [{maand:'juli',titel:'Spec-driven development op 2 lopende projecten',eigenaar:'Sten',rol:'dev lead',meetbaar:'2 projecten draaien volledig spec-driven tegen 31/7',status:'loopt'},
+        {maand:'juni',titel:'Automatische PR-samenvattingen in de review-flow',eigenaar:'Sten',rol:'dev',meetbaar:'elke PR krijgt AI-samenvatting',status:'ingebed'}]),
+     T('Interne demo\'s / sprint reviews','Voortgang tonen',
+       'Voortgang presenteren, feedback opvangen',
+       'Demo-notities en releasenotes opstellen',
+       'Releasenotes, demo-notities',['Claude','Loom'])
+   ]},
+   {id:'qa',naam:'QA &amp; testing',taken:[
+     T('Functionele testen','Werking controleren',
+       'Edge cases bedenken, gebruikslogica beoordelen',
+       'Testcases genereren op basis van requirements',
+       'Testcases, testrapport',['Claude Code','Playwright'],
+       [{maand:'juli',titel:'AI-gegenereerde testcases uit requirements',eigenaar:'Sten',rol:'dev',meetbaar:'1 project volledig gedekt met AI-testcases',status:'roadmap'}]),
+     T('Cross-browser/device testen','Consistentie checken',
+       'Visuele beoordeling, prioriteren van afwijkingen',
+       'Geautomatiseerde screenshot-vergelijking en rapportage',
+       'Cross-browser-rapport',['BrowserStack','Claude']),
+     T('Performance en security','Scans en risico',
+       'Risico-inschatting, interpretatie van resultaten in context',
+       'Performance- en security-scans automatiseren, resultaten samenvatten',
+       'Scan-rapport, prioriteiten',['Lighthouse','Claude']),
+     T('Bugfixing en regressie','Fixen en hertesten',
+       'Prioriteren van bugs, complexe fixes',
+       'Bugrapportage samenvatten en clusteren, regressietests genereren',
+       'Opgeloste bugs, regressietests',['Claude Code','Playwright'])
+   ]},
+   {id:'golive',naam:'Go-live',taken:[
+     T('Deploy naar productie','Live zetten',
+       'Go/no-go beslissing, risicobeheer tijdens release',
+       'Release notes en deploy-checklist genereren',
+       'Deploy-checklist, releasenotes',['Claude','CI/CD']),
+     T('DNS/domeinconfiguratie','Domein live',
+       'Kritische controle bij live-zetten, geen foutmarge',
+       'Configuratiestappen documenteren, troubleshooting-suggesties',
+       'Configuratie-documentatie',['Claude','DNS-dashboard']),
+     T('Monitoring opzetten','Metrics en alerts',
+       'Bepalen welke metrics en alerts relevant zijn',
+       'Dashboards en alertregels helpen opzetten, eerste analyses van logs',
+       'Monitoring-dashboard',['Claude','Sentry']),
+     T('Klanttraining en documentatie','Overdracht',
+       'Training geven, vragen van klant beantwoorden',
+       'Trainingsmateriaal en documentatie genereren',
+       'Trainingsmateriaal, docs',['Claude','Loom'])
+   ]},
+   {id:'support',naam:'Support',taken:[
+     T('Ticket-triage en eerste lijn','Tickets afhandelen',
+       'Complexe en gevoelige tickets, empathie bij escalaties',
+       'Tickets automatisch categoriseren en prioriteren, standaardantwoorden voorstellen',
+       'Snellere triage, standaardantwoorden',['Zendesk','Claude'],
+       [{maand:'juli',titel:'AI-standaardantwoorden voor terugkerende tickets',eigenaar:'Sten',rol:'dev',meetbaar:'top 5 terugkerende vragen geautomatiseerd tegen 31/7',status:'roadmap'}]),
+     T('Bugfixing/onderhoud','Onderhoud',
+       'Complexe fixes, architecturale impact inschatten',
+       'Bug reproduceren en documenteren, eerste fix-voorstellen',
+       'Opgeloste bugs',['Claude Code','Playwright']),
+     T('SLA-opvolging','Escalatiebeheer',
+       'Escalaties de-escaleren, prioriteiten bewaken',
+       'SLA-status monitoren en samenvatten, waarschuwingen genereren',
+       'SLA-overzicht, alerts',['Claude','Helpdesk']),
+     T('Kennisbank-onderhoud','Kennis actueel houden',
+       'Kwaliteitscontrole, structuur bewaken',
+       'Kennisbankartikelen genereren en updaten op basis van tickets',
+       'Actuele kennisbank',['Claude','Kennisbank'])
+   ]}
+ ]},
+
+ {id:'craft',kind:'team',naam:'Craft',lane:'t',traject:'contentplatformen',fases:[
+   {id:'disc',naam:'Discovery',taken:[
+     T('Kick-off meeting','Verwachtingen en start',
+       'Verwachtingen afstemmen, vertrouwen bouwen',
+       'Agenda en voorbereidingsdocument opstellen, notulen na afloop',
+       'Agenda, notulen',['Claude','Fireflies']),
+     T('Platformkeuze','CMS-vergelijking',
+       'Langetermijnvisie, klantnoden afwegen tegen platformmogelijkheden',
+       'Platformvergelijking researchen, voor- en nadelen samenvatten',
+       'Platformadvies',['Claude','Comparison sheet']),
+     T('Contentaudit','Bestaande content in kaart',
+       'Kwalitatieve beoordeling van content, keuzes over behoud of herschrijven',
+       'Bestaande content automatisch inventariseren en categoriseren',
+       'Content-inventaris',['Screaming Frog','Claude'],
+       [{maand:'juni',titel:'Automatische contentinventaris bij audit',eigenaar:'Jan B.',rol:'developer',meetbaar:'audit-inventaris volledig geautomatiseerd',status:'ingebed'}]),
+     T('Requirements en scope','Scope bepalen',
+       'Prioriteiten stellen, klantverwachtingen managen',
+       'Requirements-doc opstellen op basis van audit en gesprekken',
+       'Requirements-document',['Claude','Notion'])
+   ]},
+   {id:'uxui',naam:'UX/UI design',taken:[
+     T('Template-/theme-keuze','Passend voorstel',
+       'Passend voorstel kiezen binnen budget en merkidentiteit',
+       'Templatevarianten voorstellen op basis van requirements',
+       'Template-voorstel',['Figma AI','Craft CMS']),
+     T('Huisstijl toepassen','Visueel design',
+       'Merkidentiteit vertalen naar design, creativiteit',
+       'Kleur- en typografievarianten genereren, layoutsuggesties',
+       'Toegepaste huisstijl',['Figma','Claude']),
+     T('Page builder configuratie','Componenten opzetten',
+       'Structuurkeuzes die schaalbaarheid en beheer vergemakkelijken',
+       'Herhalende componenten opzetten, eerste configuratie',
+       'Geconfigureerde templates',['Claude Code','Craft CMS']),
+     T('Design review met klant','Feedback verwerken',
+       'Feedback opvangen en vertalen, klantrelatie',
+       'Reviewnotities structureren tot actiepunten',
+       'Actiepunten uit review',['Claude','Figma'])
+   ]},
+   {id:'dev',naam:'Development',taken:[
+     T('Platform-installatie','Basisconfiguratie',
+       'Technische keuzes rond hosting en beveiliging',
+       'Standaardinstallatie en basisconfiguratie scripten',
+       'Werkende basisinstallatie',['Claude Code','Craft CMS']),
+     T('Custom modules bouwen','Integraties en maatwerk',
+       'Complexe integraties, maatwerklogica',
+       'Codevoorstellen voor modules, documentatie',
+       'Werkende modules, docs',['Claude Code','Copilot']),
+     T('Content-inbouw en migratie','Content invoeren',
+       'Kwaliteitscontrole, prioriteren welke content eerst',
+       'Content migreren en invoeren, bulk-taken automatiseren',
+       'Ingebouwde en gemigreerde content',['Claude Code','Craft CMS'],
+       [{maand:'juli',titel:'Scaffolding-skill voor nieuwe Craft-templates',eigenaar:'Jan B.',rol:'developer',meetbaar:'skill gebruikt op 1 echte start tegen 31/7',status:'roadmap'},
+        {maand:'juni',titel:'Bulk content-migratie met AI',eigenaar:'Jan B.',rol:'developer',meetbaar:'1 migratie van 200+ pagina\'s geautomatiseerd',status:'uitgeprobeerd'}]),
+     T('Performance-optimalisatie','Snelheid verbeteren',
+       'Interpretatie van resultaten, prioriteren van optimalisaties',
+       'Performance-scans automatiseren, optimalisatievoorstellen',
+       'Optimalisatie-rapport',['Lighthouse','Claude'])
+   ]},
+   {id:'qa',naam:'QA &amp; testing',taken:[
+     T('Functionele testen','Werking controleren',
+       'Edge cases, gebruikslogica beoordelen',
+       'Testcases genereren op basis van requirements',
+       'Testcases, testrapport',['Claude','Playwright']),
+     T('Content- en linkcheck','Kwaliteit content',
+       'Eindredactie, merkconsistentie',
+       'Linkchecks, spelling- en grammatica-check',
+       'Schone, consistente content',['Screaming Frog','Claude'],
+       [{maand:'juli',titel:'AI-taalcheck vast in de content-QA',eigenaar:'Jan B.',rol:'content',meetbaar:'elke oplevering door AI-taalcheck tegen 31/7',status:'loopt'}]),
+     T('Cross-browser testen','Consistentie checken',
+       'Visuele beoordeling, prioriteren van afwijkingen',
+       'Geautomatiseerde screenshot-vergelijking',
+       'Cross-browser-rapport',['BrowserStack','Claude']),
+     T('SEO-technische check','Techniek en vindbaarheid',
+       'Strategische SEO-keuzes, prioriteren van fixes',
+       'Technische SEO-scan en aanbevelingen genereren',
+       'SEO-rapport, fixes',['Screaming Frog','Surfer SEO'])
+   ]},
+   {id:'golive',naam:'Go-live',taken:[
+     T('Publiceren/live zetten','Site live',
+       'Go/no-go beslissing, risicobeheer',
+       'Publicatie-checklist en releasenotes genereren',
+       'Publicatie-checklist',['Claude','Craft CMS']),
+     T('DNS/domeinconfiguratie','Domein live',
+       'Kritische controle bij live-zetten',
+       'Configuratiestappen documenteren, troubleshooting-suggesties',
+       'Configuratie-documentatie',['Claude','DNS-dashboard']),
+     T('Klanttraining','Overdracht',
+       'Training geven, vragen beantwoorden',
+       'Trainingsmateriaal en FAQ genereren',
+       'Trainingsmateriaal',['Claude','Loom']),
+     T('Documentatie en FAQ','Kennisoverdracht',
+       'Kwaliteitscontrole, klantspecifieke nuances toevoegen',
+       'Documentatie en FAQ als eerste draft genereren',
+       'Documentatie, FAQ',['Claude','Kennisbank'])
+   ]},
+   {id:'support',naam:'Support',taken:[
+     T('Ticket-triage en eerste lijn','Tickets afhandelen',
+       'Complexe en gevoelige tickets, empathie bij escalaties',
+       'Tickets automatisch categoriseren en prioriteren, standaardantwoorden voorstellen',
+       'Snellere triage, standaardantwoorden',['Zendesk','Claude']),
+     T('Bugfixing/onderhoud','Onderhoud',
+       'Complexe fixes, architecturale impact inschatten',
+       'Bug reproduceren en documenteren, eerste fix-voorstellen',
+       'Opgeloste bugs',['Claude Code','Craft CMS']),
+     T('SLA-opvolging','Escalatiebeheer',
+       'Escalaties de-escaleren, prioriteiten bewaken',
+       'SLA-status monitoren en samenvatten, waarschuwingen genereren',
+       'SLA-overzicht, alerts',['Claude','Helpdesk']),
+     T('Kennisbank-onderhoud','Kennis actueel houden',
+       'Kwaliteitscontrole, structuur bewaken',
+       'Kennisbankartikelen genereren en updaten op basis van tickets',
+       'Actuele kennisbank',['Claude','Kennisbank'])
+   ]}
+ ]},
+
+ {id:'sm',kind:'team',naam:'Shaved Monkey',lane:'c',traject:'communicatie',fases:[
+   {id:'strat',naam:'Strategie',taken:[
+     T('Contentstrategie bepalen','Positionering en doelgroep',
+       'Strategische keuzes, merkpositionering, doelgroepinzicht',
+       'Doelgroep- en marktresearch samenvatten, eerste strategievoorstel',
+       'Contentstrategie',['Claude','Briefingtemplates']),
+     T('Contentkalender opstellen','Planning',
+       'Prioriteiten stellen, afstemmen op business-momenten',
+       'Kalendervoorstel genereren op basis van strategie en seizoenspieken',
+       'Contentkalender',['Claude','Airtable'],
+       [{maand:'juli',titel:'Contentkalender-generator testen',eigenaar:'Lore',rol:'strateeg',meetbaar:'1 kalender volledig gegenereerd en gebruikt',status:'uitgeprobeerd'}]),
+     T('Tone-of-voice vastleggen','Merkstem',
+       'Merkgevoel, nuance, cultuurfit',
+       'Tone-of-voice-gids opstellen op basis van bestaande content-analyse',
+       'Tone-of-voice-gids',['Claude','Merkgids']),
+     T('Kanalenkeuze en mediaplanning','Kanalen en budget',
+       'Strategische kanaalkeuzes, budgetafwegingen',
+       'Kanaalprestaties analyseren, eerste mediaplan-voorstel',
+       'Mediaplan',['Claude','GA4'])
+   ]},
+   {id:'creatie',naam:'Creatie',taken:[
+     T('Copywriting','Blogs, social, nieuwsbrieven',
+       'Storytelling, merkstem, creativiteit',
+       'Eerste drafts genereren, variaties en koppen voorstellen',
+       'Kanaalklare copy, varianten',['Claude','Surfer SEO'],
+       [{maand:'juli',titel:'AI-copy workflow voor social vast in gebruik',eigenaar:'Lore',rol:'copywriter',meetbaar:'1 campagne volledig via de workflow tegen 31/7',status:'ingebed'},
+        {maand:'juni',titel:'Eerste AI-copy templates opgezet',eigenaar:'Lore',rol:'copywriter',meetbaar:'templates gemaakt en getest',status:'uitgeprobeerd'}]),
+     T('Visuele content','Beeld en grafisch',
+       'Artdirectie, merkidentiteit, esthetisch oordeel',
+       'Beeldvarianten en moodboards genereren, eerste ontwerpvoorstellen',
+       'Moodboards, beeldvarianten',['Firefly','Canva'],
+       [{maand:'juli',titel:'Moodboard-generatie met Firefly testen',eigenaar:'Lore',rol:'art direction',meetbaar:'1 campagne-moodboard via AI',status:'roadmap'}]),
+     T('Video-productie en scripting','Video',
+       'Regie, montagekeuzes, presentatie',
+       'Scriptvoorstellen, voice-over en ondertiteling genereren',
+       'Scripts, ondertiteling',['Claude','Descript']),
+     T('Vertalingen en lokalisatie','Meertaligheid',
+       'Culturele nuance, eindredactie',
+       'Eerste vertaling genereren, consistentie-check',
+       'Vertaalde, gecheckte content',['DeepL','Claude'])
+   ]},
+   {id:'review',naam:'Review',taken:[
+     T('Interne redactie','Kwaliteitscontrole',
+       'Eindoordeel, merkconsistentie',
+       'Spelling- en grammatica-check, consistentie met stijlgids',
+       'Geredigeerde content',['Claude','Grammarly']),
+     T('Klantfeedback verwerken','Revisies',
+       'Feedback interpreteren, prioriteren, relatie bewaken',
+       'Feedback structureren tot actiepunten, revisievoorstellen genereren',
+       'Actiepunten, revisies',['Claude','Notion']),
+     T('Legal/compliance check','Juridische screening',
+       'Juridische eindverantwoordelijkheid, risico-inschatting',
+       'Eerste screening op gevoelige claims en compliance-risico\'s',
+       'Compliance-screening',['Claude'])
+   ]},
+   {id:'pub',naam:'Publicatie',taken:[
+     T('Content inplannen en publiceren','Planning en posts',
+       'Timing-gevoel, prioriteiten bij planning',
+       'Publicatieschema automatiseren, posts inplannen',
+       'Ingeplande posts',['Buffer','Claude']),
+     T('Community management','Reacties opvolgen',
+       'Empathisch reageren, merkstem in dialoog, escalaties opvangen',
+       'Eerste antwoordvoorstellen genereren, sentiment monitoren',
+       'Antwoordvoorstellen, sentiment',['Claude','Social AI']),
+     T('Paid boosting','Advertenties',
+       'Budgetkeuzes, strategische targeting',
+       'Targeting-suggesties, advertentietekst-varianten genereren',
+       'Advertentievarianten',['Meta Ads','Claude'])
+   ]},
+   {id:'mon',naam:'Monitoring',taken:[
+     T('Performance-rapportage','Bereik en engagement',
+       'Interpretatie in context, aanbevelingen formuleren',
+       'Data samenvatten uit dashboards, rapport-draft opstellen',
+       'Performance-rapport',['Claude','GA4'],
+       [{maand:'juni',titel:'Automatische maandrapportage social',eigenaar:'Lore',rol:'strateeg',meetbaar:'maandrapport in 1 klik gegenereerd',status:'ingebed'}]),
+     T('Bijsturing strategie','Inzichten omzetten',
+       'Strategische beslissingen, prioriteiten herzien',
+       'Patronen en trends signaleren uit data, verbetervoorstellen',
+       'Bijsturingsvoorstellen',['Claude','Dashboards']),
+     T('Concurrentie- en trendmonitoring','Markt volgen',
+       'Interpretatie, relevantie inschatten voor eigen merk',
+       'Concurrentcontent en trends automatisch scannen en samenvatten',
+       'Trend- en concurrentierapport',['Claude','Social listening'])
+   ]}
+ ]},
+
+ {id:'doorlopend',kind:'shared',naam:'Gedeeld &middot; account management',band:'bottom',fases:[
+   {id:'account',naam:'Account management',taken:[
+     T('Check-ins / QBR\'s','Periodieke opvolging',
+       'Relatiebeheer, strategisch advies',
+       'QBR-voorbereiding, performance-samenvatting',
+       'QBR-deck, samenvatting',['Claude','Fireflies'],
+       [{maand:'juni',titel:'QBR-voorbereiding met AI-samenvatting',eigenaar:'Cedric',rol:'account',meetbaar:'elke QBR voorbereid met AI-samenvatting',status:'ingebed'}]),
+     T('Performance-rapportage','Klantrapport',
+       'Interpretatie in klantcontext, aanbevelingen formuleren',
+       'Data samenvatten uit dashboards, rapport-draft opstellen',
+       'Maandrapport per klant',['Looker','Claude'],
+       [{maand:'juli',titel:'Automatische maandrapportage per klant',eigenaar:'Cedric',rol:'account',meetbaar:'1 klant volledig geautomatiseerd tegen 31/7',status:'uitgeprobeerd'}]),
+     T('Upsell/cross-sell','Groeikansen',
+       'Onderhandelen, kansen aanvoelen, vertrouwen',
+       'Kansen signaleren op basis van data, gespreksvoorbereiding',
+       'Kansenlijst, gespreksprep',['Claude','CRM']),
+     T('Contractverlenging','Retainer-opvolging',
+       'Onderhandelen, relatiebeheer',
+       'Contractvoorstellen en herinneringen opstellen',
+       'Verlengingsvoorstellen',['Claude','PandaDoc'])
+   ]}
+ ]}
+]};
+
+let state={screen:'flow',view:'maand',month:'juli',groupId:'rhino',faseId:'disc',taakId:0};
+function group(id){return DATA.groups.find(g=>g.id===id);}
+function fase(g,fid){return g.fases.find(f=>f.id===fid);}
+function curProj(t){return t.projecten.find(p=>p.maand===state.month);}
+function faseStats(f){let cur=0,ing=0;f.taken.forEach(t=>{if(curProj(t))cur++;t.projecten.forEach(p=>{if(p.status==='ingebed'&&MO[p.maand]<=MO[state.month])ing++;});});return{cur,ing,taken:f.taken.length};}
+function pill(status){const s=ST[status];return `<span class="pill" style="background:${s.bg};color:${s.fg};">${s.l}</span>`;}
+
+function render(){
+  const app=document.getElementById('app'),tr=document.getElementById('topright');
+  if(state.screen==='flow'){
+    tr.innerHTML='';
+    app.innerHTML=state.view==='maand'?flow():kwartaal();
+  }else{tr.innerHTML='';app.innerHTML=state.screen==='fase'?faseScreen():taskScreen();}
+}
+function setMonth(m){state.month=m;render();}
+function setView(v){state.view=v;render();}
+function go(screen,opts={}){Object.assign(state,{screen},opts);window.scrollTo(0,0);render();}
+
+function fblock(g,f){
+  const s=faseStats(f);
+  const pills=[];
+  const meta=s.taken?`<span class="taken">${s.taken} ${s.taken===1?'taak':'taken'}</span>`:`<span class="taken">geen taken</span>`;
+  return `<div class="fblock ${s.cur?'act':''}" onclick="go('fase',{groupId:'${g.id}',faseId:'${f.id}'})">
+    <div class="fn">${f.naam}</div><div class="meta">${meta}${pills.join('')}</div></div>`;
+}
+
+function flow(){
+  const top=DATA.groups.find(g=>g.band==='top');
+  const bottom=DATA.groups.find(g=>g.band==='bottom');
+  const teams=DATA.groups.filter(g=>g.kind==='team');
+  const topHtml=`<div class="band"><div class="bandlbl">${top.naam}</div><div class="faserow">${top.fases.map(f=>fblock(top,f)).join('')}</div></div>`;
+  const lanesHtml=`<div class="lanes">${teams.map(g=>`
+    <div class="lane ${g.lane}"><div class="lanehd"><span class="nm">${g.naam}</span><span class="tr">${g.traject.split(' ')[0]}</span></div>
+    ${g.fases.map(f=>fblock(g,f)).join('')}</div>`).join('')}</div>`;
+  const botHtml=`<div class="band"><div class="bandlbl">${bottom.naam}</div><div class="faserow">${bottom.fases.map(f=>fblock(bottom,f)).join('')}</div></div>`;
+  const leg=`<div class="legend"><span style="color:var(--ink3)">Gekleurde lanen = binnen team &middot; grijze banden = gedeeld</span></div>`;
+  return `<h2 class="maptitle" style="margin-top:2px">Klantreis (as-is) &middot; waar kan je overal innoveren</h2>
+    <div class="mapsub">De volledige flow per team. Klik een fase om de taken te openen. Gekleurde lanen zijn binnen team, grijze banden zijn gedeeld.</div>
+    ${topHtml}<div class="flowarrow">${svg.down}</div>${lanesHtml}<div class="flowarrow">${svg.down}</div>${botHtml}${leg}`;
+}
+
+function collectProjects(g){
+  const out=[];
+  g.fases.forEach(f=>f.taken.forEach((t,ti)=>{const p=curProj(t);if(p)out.push({p,t,faseId:f.id,taakId:ti});}));
+  return out;
+}
+function ingebedTotal(groups){let c=0;groups.forEach(g=>g.fases.forEach(f=>f.taken.forEach(t=>t.projecten.forEach(p=>{if(p.status==='ingebed'&&MO[p.maand]<=MO[state.month])c++;}))));return c;}
+
+function dmcol(naam,sub,groups,shared){
+  let projs=[];groups.forEach(g=>collectProjects(g).forEach(x=>projs.push({...x,groupId:g.id})));
+  const ing=ingebedTotal(groups);
+  let cards=projs.map(x=>`
+    <div class="pcard" onclick="go('task',{groupId:'${x.groupId}',faseId:'${x.faseId}',taakId:${x.taakId}})">
+      <div class="tk">Taak &middot; ${x.t.naam}</div>
+      <div class="tt">${x.p.titel}</div>
+      <div class="ft"><span class="who"><span class="av">${initials(x.p.eigenaar)}</span>${x.p.eigenaar}</span>${pill(x.p.status)}</div>
+    </div>`).join('');
+  if(!projs.length)cards=`<div class="empty">Geen project deze maand</div>`;
+  return `<div class="dmcol"><div class="ch"><div class="cn">${naam}</div>
+    <div class="cc">${projs.length} ${projs.length===1?'project':'projecten'} &middot; <b>${ing} ingebed</b></div>
+    ${shared?'<div class="shared">gedeeld</div>':`<div class="cc" style="margin-top:1px">${sub}</div>`}</div>${cards}</div>`;
+}
+
+function dezeMaand(){
+  const teams=DATA.groups.filter(g=>g.kind==='team');
+  const shared=DATA.groups.filter(g=>g.kind==='shared');
+  const cols=teams.map(g=>dmcol(g.naam,g.traject,[g],false)).join('')
+    + dmcol('Gedeeld',null,shared,true);
+  return `<h2 class="dmtitle">Deze maand &middot; wat loopt er</h2>
+    <div class="dmsub">De gekozen maandprojecten per team. Klik een kaart om de taak en historiek te openen.</div>
+    <div class="dmcols">${cols}</div>`;
+}
+
+function kwartaal(){
+  let all=[];
+  DATA.groups.forEach(g=>g.fases.forEach(f=>f.taken.forEach((t,ti)=>t.projecten.forEach(p=>all.push({p,t,g,faseId:f.id,taakId:ti})))));
+  const cnt=s=>all.filter(x=>x.p.status===s).length;
+  const tiles=[['ingebed',cnt('ingebed'),'var(--green-fg)'],['loopt',cnt('loopt'),'var(--blue-fg)'],['uitgeprobeerd',cnt('uitgeprobeerd'),'var(--amber-fg)'],['gestopt of roadmap',cnt('gestopt')+cnt('roadmap'),'var(--ink2)']];
+  const tileHtml=`<div class="stats">${tiles.map(([l,n,c])=>`<div class="stat"><div class="sn" style="color:${c}">${n}</div><div class="sl">${l}</div></div>`).join('')}</div>`;
+  const buckets=[...DATA.groups.filter(g=>g.kind==='team').map(g=>({naam:g.naam,groups:[g]})),{naam:'Gedeeld',groups:DATA.groups.filter(g=>g.kind==='shared')}];
+  const cols=buckets.map(b=>{
+    let items=[];
+    b.groups.forEach(g=>g.fases.forEach(f=>f.taken.forEach((t,ti)=>t.projecten.forEach(p=>{if(p.status==='ingebed')items.push({p,t,g,faseId:f.id,taakId:ti});}))));
+    items.sort((a,b)=>MO[a.p.maand]-MO[b.p.maand]);
+    const roles={};items.forEach(x=>{const r=x.p.rol||'onbekend';roles[r]=(roles[r]||0)+1;});
+    const roleHtml=Object.keys(roles).length?`<div class="roles">${Object.entries(roles).map(([r,n])=>`<span class="rolechip ${n>=3?'ok':''}">${r} ${n}/3</span>`).join('')}</div>`:'';
+    let cards=items.map(x=>`
+      <div class="pcard" onclick="go('task',{groupId:'${x.g.id}',faseId:'${x.faseId}',taakId:${x.taakId}})">
+        <div class="tk">${MLABEL[x.p.maand]} &middot; ${x.t.naam}</div>
+        <div class="tt">${x.p.titel}</div>
+        <div class="ft"><span class="who"><span class="av">${initials(x.p.eigenaar)}</span>${x.p.eigenaar}</span>${pill('ingebed')}</div>
+      </div>`).join('');
+    if(!items.length)cards=`<div class="empty">Nog niets ingebed</div>`;
+    return `<div class="dmcol"><div class="ch"><div class="cn">${b.naam}</div><div class="cc"><b>${items.length} ingebed</b> &middot; doel 3 per rol</div></div>${roleHtml}${cards}</div>`;
+  }).join('');
+  return `<h2 class="dmtitle">Tussenstand kwartaal &middot; wat is er ingebed</h2>
+    <div class="dmsub">De structurele AI-verbeteringen die deze fase (mei tot juli 2026) definitief ingebed raakten. Dit is wat telt voor KR2. De maandkiezer staat hier uit, dit telt het hele kwartaal op.</div>
+    ${tileHtml}
+    <h2 class="maptitle" style="margin-top:28px">Ingebed per team &middot; doel is 3 per rol</h2>
+    <div class="mapsub">Elke kaart is een verbetering die vast onderdeel van het werkproces werd. Klik door naar de taak voor de historiek.</div>
+    <div class="dmcols">${cols}</div>`;
+}
+
+function faseScreen(){
+  const g=group(state.groupId),f=fase(g,state.faseId);
+  let taken;
+  if(!f.taken.length){taken=`<div style="color:var(--ink3);font-size:13px;padding:8px 0;">Nog geen taken uitgewerkt in deze fase.</div>`;}
+  else{taken=`<div class="tgrid">`+f.taken.map((t,ti)=>{
+    const badge='';
+    return `<div class="tcard">
+      <div class="hd"><div class="num">${ti+1}</div><div style="flex:1"><div class="hn">${t.naam}</div><div class="hs">${t.sub}</div></div>${badge}</div>
+      <div class="triple"><div><div class="lbl cl">Mens doet</div><p>${t.mens}</p></div>
+       <div><div class="lbl cl">AI doet</div><p>${t.ai}</p></div>
+       <div><div class="lbl cl">Output</div><p>${t.output}</p></div></div>
+      <div class="tfoot"><span class="lbl">Tools</span>${t.tools.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>`;
+  }).join('')+`</div>`;}
+  const sub=g.kind==='team'?`${g.naam} &middot; ${g.traject}`:g.naam.replace(/&middot;/g,'·');
+  return `<div class="crumb"><a onclick="go('flow')">Klantreis</a>${svg.chevR}<span>${f.naam}</span></div>
+    <h2 class="h2row">${f.naam}</h2><div class="subrow">${sub}</div>
+    <div class="tsec">Taken binnen ${f.naam}</div>${taken}`;
+}
+
+function taskScreen(){
+  const g=group(state.groupId),f=fase(g,state.faseId),t=f.taken[state.taakId];
+  const now=curProj(t);
+  const hist=t.projecten.filter(p=>MO[p.maand]<MO[state.month]).sort((a,b)=>MO[b.maand]-MO[a.maand]);
+  const ing=t.projecten.filter(p=>p.status==='ingebed'&&MO[p.maand]<=MO[state.month]).length;
+  const er=p=>`${p.eigenaar}${p.rol?' &middot; '+p.rol:''}`;
+  const nowHtml=now?`<div class="nowcard"><div class="nh"><span class="lbl" style="color:var(--blue-fg)">Nu &middot; ${MLABEL[state.month]}</span>${pill(now.status)}</div>
+      <div class="ntt">${now.titel}</div>
+      <div class="meta2"><span>${svg.user}${er(now)}</span>${now.meetbaar?`<span>${svg.target}${now.meetbaar}</span>`:''}</div></div>`
+    :`<div style="color:var(--ink3);font-size:12.5px;margin-bottom:18px;">Nog geen maandproject voor ${MLABEL[state.month]}. Voeg er een toe hierboven.</div>`;
+  const histHtml=hist.length?`<div class="lbl" style="margin-bottom:12px;">Historiek</div><div class="tl"><div class="rail"></div>`+hist.map(p=>{
+    const s=ST[p.status];return `<div class="it"><div class="nd" style="background:${s.d}"></div>
+      <div class="mrow"><span class="mo">${MLABEL[p.maand]}</span>${pill(p.status)}</div>
+      <div class="tt">${p.titel}</div><div class="ds">${p.eigenaar}${p.meetbaar?' &middot; '+p.meetbaar:''}</div></div>`;
+  }).join('')+`</div>`:`<div class="lbl" style="margin-bottom:8px;">Historiek</div><div style="color:var(--ink3);font-size:12.5px;">Nog geen eerdere maandprojecten op deze taak.</div>`;
+  const sub=g.kind==='team'?`${g.naam} &middot; ${f.naam}`:`${g.naam.replace(/&middot;/g,'·')} &middot; ${f.naam}`;
+  return `<div class="crumb"><a onclick="go('flow')">Klantreis</a>${svg.chevR}<a onclick="go('fase')">${f.naam}</a>${svg.chevR}<span>${t.naam}</span></div>
+   <div class="detail"><div class="hd"><div class="num">${state.taakId+1}</div><div class="grow"><div class="hn">${t.naam}</div><div class="hs">${sub}</div></div>
+     <div class="kpi"><div class="n">${ing}</div><div class="l">ingebed</div></div></div>
+     <div class="triple"><div><div class="lbl cl">Mens doet</div><p>${t.mens}</p></div>
+       <div><div class="lbl cl">AI doet</div><p>${t.ai}</p></div>
+       <div><div class="lbl cl">Output</div><p>${t.output}</p></div></div>
+     <div class="tfoot"><span class="lbl">Tools</span>${t.tools.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+     <div class="innsec"><div class="innhead"><span class="lbl">Innovatie op deze taak</span>
+         <button class="btn" onclick="toggleForm()">${svg.plus}Experiment toevoegen</button></div>
+       <div id="addform" class="addform hidden">
+         <div class="row">
+           <div class="fld"><label>Maand (ook een eerdere maand kan)</label>
+             <select id="af_maand">${['mei','juni','juli'].map(m=>`<option value="${m}" ${m===state.month?'selected':''}>${MLABEL[m]}</option>`).join('')}</select></div>
+           <div class="fld"><label>Status</label>
+             <select id="af_status">${Object.keys(ST).map(s=>`<option value="${s}">${ST[s].l}</option>`).join('')}</select></div>
+         </div>
+         <div class="fld"><label>Wat ga je doen</label><input id="af_titel" placeholder="AI-interviewanalyse vast in de onderzoeksflow"></div>
+         <div class="row"><div class="fld"><label>Eigenaar</label><input id="af_eigenaar" placeholder="Anton L"></div>
+           <div class="fld"><label>Rol</label><input id="af_rol" placeholder="developer"></div></div>
+         <div class="fld"><label>Meetbaar: waaraan zie je dat het gelukt is</label><input id="af_meetbaar" placeholder="2 interviews volledig via de flow doorlopen"></div>
+         <div class="acts"><button class="btn" onclick="toggleForm()">Annuleren</button><button class="btn btn-primary" onclick="addProject()">Toevoegen</button></div>
+       </div>${nowHtml}${histHtml}</div></div>`;
+}
+function toggleForm(){document.getElementById('addform').classList.toggle('hidden');}
+function addProject(){
+  const g=group(state.groupId),f=fase(g,state.faseId),t=f.taken[state.taakId];
+  const v=id=>document.getElementById(id).value.trim();
+  t.projecten.push({maand:v('af_maand'),status:v('af_status'),titel:v('af_titel')||'Nieuw experiment',eigenaar:v('af_eigenaar')||'onbekend',rol:v('af_rol'),meetbaar:v('af_meetbaar')});
+  render();
+}
+render();
+</script>
+</body>
+</html>
